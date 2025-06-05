@@ -51,8 +51,7 @@ struct PollsView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding()
-            .navigationTitle("BiteBattle")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Your Polls")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     AccountButton()
@@ -484,5 +483,13 @@ struct PollsView: View {
         }
     }
 }
+
+#if DEBUG
+struct PollsView_Previews: PreviewProvider {
+    static var previews: some View {
+        PollsView()
+    }
+}
+#endif
 
 

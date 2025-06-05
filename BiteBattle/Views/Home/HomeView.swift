@@ -42,7 +42,6 @@ struct HomeView: View {
             }
             .padding()
             .navigationTitle("BiteBattle")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: AccountView()) {
@@ -105,3 +104,11 @@ struct AppButtonLabel: View {
         .animation(.easeInOut(duration: 0.15), value: isDisabled)
     }
 }
+
+#if DEBUG
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView()
+    }
+}
+#endif

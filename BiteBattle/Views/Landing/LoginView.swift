@@ -78,6 +78,13 @@ struct LoginView: View {
                 .padding()
                 .navigationTitle("Login")
                 .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                            Label("Back to Welcome", systemImage: "chevron.left")
+                        }
+                    }
+                }
             }
         }
     }
@@ -124,3 +131,11 @@ struct LoginView: View {
         }.resume()
     }
 }
+
+#if DEBUG
+struct LoginView_Previews: PreviewProvider {
+    static var previews: some View {
+        LoginView()
+    }
+}
+#endif

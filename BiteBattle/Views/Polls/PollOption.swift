@@ -27,7 +27,7 @@ struct PollOptionView: View {
             .ignoresSafeArea()
 
             VStack(spacing: 20) {
-                Text("Add Option to \(poll.name)")
+                Text("Select Options \(poll.name)")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
@@ -162,7 +162,6 @@ struct PollOptionView: View {
             .padding()
         }
         .navigationTitle("Add Option")
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     func searchRestaurants() {
@@ -271,3 +270,21 @@ struct PollOptionView: View {
         return URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxwidth=\(maxWidth)&photoreference=\(reference)&key=AIzaSyCHFSr3LuANYJu4dALcGZquzF0MX8OSKsI")
     }
 }
+
+#if DEBUG
+struct PollOptionView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Provide a mock Poll for preview (update for new Poll struct)
+        PollOptionView(poll: Poll(
+            id: "1",
+            name: "Sample Poll",
+            invite_code: "1234",
+            role: nil,
+            members: [],
+            created_by: "owner",
+            created_at: "",
+            updated_at: ""
+        ))
+    }
+}
+#endif

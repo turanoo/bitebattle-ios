@@ -6,6 +6,7 @@ struct RegisterView: View {
     @State private var name = ""
     @State private var registrationStatus: String?
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         AppBackground {
@@ -86,7 +87,13 @@ struct RegisterView: View {
                 .padding()
             }
             .navigationTitle("Register")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                        Label("Back to Welcome", systemImage: "chevron.left")
+                    }
+                }
+            }
         }
     }
 
@@ -134,3 +141,11 @@ struct RegisterView: View {
         }.resume()
     }
 }
+
+#if DEBUG
+struct RegisterView_Previews: PreviewProvider {
+    static var previews: some View {
+        RegisterView()
+    }
+}
+#endif

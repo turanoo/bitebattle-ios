@@ -54,7 +54,6 @@ struct AccountView: View {
                 }
                 .padding()
                 .navigationTitle("Account")
-                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: { isLoggedIn = false }) {
@@ -152,5 +151,12 @@ struct AccountView: View {
                 originalEmail = email
             }
         }.resume()
+    }
+}
+
+
+struct AccountView_Previews: PreviewProvider {
+    static var previews: some View {
+        AccountView()
     }
 }

@@ -44,7 +44,14 @@ struct LandingView: View {
             }
             .padding()
             .navigationTitle("Welcome")
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
+
+#if DEBUG
+struct LandingView_Previews: PreviewProvider {
+    static var previews: some View {
+        LandingView()
+    }
+}
+#endif

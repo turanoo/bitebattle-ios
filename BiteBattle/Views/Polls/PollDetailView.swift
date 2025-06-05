@@ -19,7 +19,6 @@ struct PollDetailView: View {
             }
             .padding()
             .navigationTitle("Poll Detail")
-            .navigationBarTitleDisplayMode(.inline)
             .onAppear(perform: fetchResults)
         }
     }
@@ -150,3 +149,21 @@ extension PollOptionResult: Equatable {
         lhs.voter_ids == rhs.voter_ids
     }
 }
+
+#if DEBUG
+struct PollDetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Provide a mock Poll for preview (update for new Poll struct)
+        PollDetailView(poll: Poll(
+            id: "1",
+            name: "Sample Poll",
+            invite_code: "1234",
+            role: nil,
+            members: [],
+            created_by: "owner",
+            created_at: "",
+            updated_at: ""
+        ))
+    }
+}
+#endif
