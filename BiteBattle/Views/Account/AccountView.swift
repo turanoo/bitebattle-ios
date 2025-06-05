@@ -13,65 +13,64 @@ struct AccountView: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
 
     var body: some View {
-        AppGradientBackground {
-            AppBackground {
-                VStack(spacing: 24) {
-                    Spacer()
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80, height: 80)
-                        .foregroundColor(AppColors.orange)
-                        .shadow(radius: 8)
+        AppBackground {
+            AppColors.background.ignoresSafeArea()
+            VStack(spacing: 24) {
+                Spacer()
+                Image(systemName: "person.crop.circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80, height: 80)
+                    .foregroundColor(AppColors.primary)
+                    .shadow(radius: 8)
 
-                    Text("Account")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(AppColors.textOnPrimary)
-                        .shadow(radius: 4)
+                Text("Account")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(AppColors.primary)
+                    .shadow(radius: 4)
 
-                    VStack(spacing: 18) {
-                        AppTextField(placeholder: "Name", text: $name, icon: "person")
-                        AppTextField(placeholder: "Email", text: $email, icon: "envelope")
-                        AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
-                    }
-                    .padding(.horizontal, 0)
-
-                    if let status = statusMessage {
-                        Text(status)
-                            .foregroundColor(AppColors.error)
-                            .font(.subheadline)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-                    }
-
-                    AppButton(title: isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.orange, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading) {
-                        updateAccount()
-                    }
-                    .padding(.horizontal, 0)
-
-                    Spacer()
+                VStack(spacing: 18) {
+                    AppTextField(placeholder: "Name", text: $name, icon: "person")
+                    AppTextField(placeholder: "Email", text: $email, icon: "envelope")
+                    AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
                 }
-                .padding()
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: { isLoggedIn = false }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "rectangle.portrait.and.arrow.right")
-                                    .foregroundColor(AppColors.error)
-                                Text("Sign Out")
-                                    .foregroundColor(AppColors.error)
-                            }
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 10)
-                            .background(AppColors.surface.opacity(0.7))
-                            .cornerRadius(8)
+                .padding(.horizontal, 0)
+
+                if let status = statusMessage {
+                    Text(status)
+                        .foregroundColor(AppColors.error)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                }
+
+                AppButton(title: isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading) {
+                    updateAccount()
+                }
+                .padding(.horizontal, 0)
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Account")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { isLoggedIn = false }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                                .foregroundColor(AppColors.error)
+                            Text("Sign Out")
+                                .foregroundColor(AppColors.error)
                         }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 10)
+                        .background(AppColors.surface)
+                        .cornerRadius(8)
                     }
                 }
             }
         }
-        .onAppear(perform: fetchAccount)
     }
 
     private var fieldsChanged: Bool {

@@ -11,7 +11,7 @@ struct HomeView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80, height: 80)
-                    .foregroundColor(AppColors.orange)
+                    .foregroundColor(AppColors.primary)
                     .shadow(radius: 10)
 
                 VStack(spacing: 18) {
@@ -19,8 +19,8 @@ struct HomeView: View {
                         AppButtonLabel(
                             title: "Polls",
                             icon: nil,
-                            background: AppColors.brown.opacity(0.9),
-                            foreground: AppColors.orange,
+                            background: AppColors.primary,
+                            foreground: AppColors.textOnPrimary,
                             isLoading: false,
                             isDisabled: false
                         )
@@ -29,7 +29,7 @@ struct HomeView: View {
                         AppButtonLabel(
                             title: "Head-to-Head",
                             icon: nil,
-                            background: AppColors.orange.opacity(0.8),
+                            background: AppColors.secondary,
                             foreground: AppColors.textOnPrimary,
                             isLoading: false,
                             isDisabled: false
@@ -41,18 +41,19 @@ struct HomeView: View {
                 Spacer()
             }
             .padding()
+            .background(AppColors.background.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: AccountView()) {
                         HStack(spacing: 6) {
                             Image(systemName: "person.crop.circle")
-                                .foregroundColor(AppColors.orange)
+                                .foregroundColor(AppColors.primary)
                             Text("Account")
-                                .foregroundColor(AppColors.orange)
+                                .foregroundColor(AppColors.primary)
                         }
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
-                        .background(AppColors.surface.opacity(0.7))
+                        .background(AppColors.surface)
                         .cornerRadius(8)
                     }
                 }

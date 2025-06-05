@@ -34,7 +34,7 @@ struct PollOptionView: View {
             .ignoresSafeArea()
 
             VStack(spacing: 20) {
-                Text("Select Options \(poll.name)")
+                Text("Search for restaurants")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
