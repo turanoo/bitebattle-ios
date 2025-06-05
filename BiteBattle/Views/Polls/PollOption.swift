@@ -217,8 +217,6 @@ struct PollOptionView: View {
         statusMessage = nil
 
         let selected = searchResults.filter { selectedRestaurants.contains($0.place_id) }
-
-        // Prepare the array payload
         let payload: [[String: Any]] = selected.map { restaurant in
             let imageUrl = restaurant.photos?.first.flatMap { photoURL($0.photo_reference)?.absoluteString } ?? ""
             return [
@@ -229,37 +227,17 @@ struct PollOptionView: View {
             ]
         }
 
-        guard let token = UserDefaults.standard.string(forKey: "authToken"),
-            !token.isEmpty,
-            let url = URL(string: "http://localhost:8080/api/polls/\(poll.id)/options"),
-            let httpBody = try? JSONSerialization.data(withJSONObject: payload) else {
-            statusMessage = "Not logged in or failed to encode data."
-            isSubmitting = false
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = httpBody
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        APIClient.shared.addPollOptions(pollId: poll.id, options: payload) { result in
             DispatchQueue.main.async {
                 isSubmitting = false
-                if let error = error {
-                    statusMessage = "Failed: \(error.localizedDescription)"
-                    return
-                }
-                if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
-                    // Dismiss the sheet after successful submit
+                switch result {
+                case .success:
                     presentationMode.wrappedValue.dismiss()
-                } else {
-                    let code = (response as? HTTPURLResponse)?.statusCode ?? 0
-                    statusMessage = "Failed: Server error (\(code))"
+                case .failure(let error):
+                    statusMessage = "Failed: \(error.localizedDescription)"
                 }
             }
-        }.resume()
+        }
     }
 
 

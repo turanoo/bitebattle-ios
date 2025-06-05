@@ -55,49 +55,22 @@ struct RegisterView: View {
     }
 
     func registerUser() {
-        guard let url = URL(string: Endpoints.register) else { return }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let payload: [String: String] = [
-            "email": email,
-            "password": password,
-            "name": name
-        ]
-
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: payload) else { return }
-
-        request.httpBody = httpBody
-
         isLoading = true
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        registrationStatus = nil
+        let lowercasedEmail = email.lowercased()
+        APIClient.shared.register(email: lowercasedEmail, password: password, name: name) { result in
             DispatchQueue.main.async {
                 isLoading = false
-                if let error = error {
+                switch result {
+                case .success(let token):
+                    UserDefaults.standard.set(token, forKey: "authToken")
+                    isLoggedIn = true
+                    registrationStatus = "Successfully registered!"
+                case .failure(let error):
                     registrationStatus = "Failed: \(error.localizedDescription)"
-                    return
-                }
-
-                if let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 201 {
-                        // Parse token from response data
-                        if let data = data,
-                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                           let token = json["token"] as? String {
-                            UserDefaults.standard.set(token, forKey: "authToken")
-                            isLoggedIn = true // Trigger navigation to HomeView
-                            registrationStatus = "Successfully registered!"
-                        } else {
-                            registrationStatus = "Registration succeeded, but token missing."
-                        }
-                    } else {
-                        registrationStatus = "Failed: Status \(httpResponse.statusCode)"
-                    }
                 }
             }
-        }.resume()
+        }
     }
 }
 

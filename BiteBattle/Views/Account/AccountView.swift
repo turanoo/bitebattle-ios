@@ -4,56 +4,79 @@ struct AccountView: View {
     @State private var name: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var newPassword: String = ""
     @State private var statusMessage: String?
     @State private var isLoading: Bool = false
-
     @State private var originalName: String = ""
     @State private var originalEmail: String = ""
     @State private var fetchFailed: Bool = false
+    @State private var showCheckmark: Bool = false
+    @State private var keyboardHeight: CGFloat = 0
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    @FocusState private var focusedField: Field?
+
+    enum Field: Hashable {
+        case name, email, password, newPassword
+    }
 
     var body: some View {
         AppBackground {
             AppColors.background.ignoresSafeArea()
-            VStack(spacing: 24) {
-                Spacer()
-                Image(systemName: "person.crop.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .foregroundColor(AppColors.primary)
-                    .shadow(radius: 8)
+            ScrollView {
+                VStack(spacing: 24) {
+                    if showCheckmark {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                            .foregroundColor(AppColors.accent)
+                            .transition(.scale.combined(with: .opacity))
+                            .padding(.top, 8)
+                    }
 
-                Text("Account")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(AppColors.primary)
-                    .shadow(radius: 4)
+                    Spacer()
+                    Image(systemName: "person.crop.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(AppColors.primary)
+                        .shadow(radius: 8)
 
-                VStack(spacing: 18) {
-                    AppTextField(placeholder: "Name", text: $name, icon: "person")
-                    AppTextField(placeholder: "Email", text: $email, icon: "envelope")
-                    AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
+                    Text("Account")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(AppColors.primary)
+                        .shadow(radius: 4)
+
+                    VStack(spacing: 18) {
+                        AppTextField(placeholder: "Name", text: $name, icon: "person")
+                            .focused($focusedField, equals: .name)
+                        AppTextField(placeholder: "Email", text: $email, icon: "envelope")
+                            .focused($focusedField, equals: .email)
+                        AppTextField(placeholder: "Current Password (optional)", text: $password, isSecure: true, icon: "lock")
+                            .focused($focusedField, equals: .password)
+                        AppTextField(placeholder: "New Password (optional)", text: $newPassword, isSecure: true, icon: "lock.rotation")
+                            .focused($focusedField, equals: .newPassword)
+                    }
+                    .padding(.horizontal, 0)
+
+                    if let status = statusMessage {
+                        Text(status)
+                            .foregroundColor(AppColors.error)
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+
+                    AppButton(title: isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading || (!password.isEmpty && newPassword.isEmpty) || (password.isEmpty && !newPassword.isEmpty)) {
+                        updateAccount()
+                    }
+                    .padding(.horizontal, 0)
+
+                    Spacer(minLength: 0)
                 }
-                .padding(.horizontal, 0)
-
-                if let status = statusMessage {
-                    Text(status)
-                        .foregroundColor(AppColors.error)
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
-
-                AppButton(title: isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading) {
-                    updateAccount()
-                }
-                .padding(.horizontal, 0)
-
-                Spacer()
+                .padding()
+                .padding(.bottom, keyboardHeight)
             }
-            .padding()
-            .navigationTitle("Account")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { isLoggedIn = false }) {
@@ -70,85 +93,88 @@ struct AccountView: View {
                     }
                 }
             }
+            .onAppear {
+                fetchAccount()
+                subscribeToKeyboardNotifications()
+            }
+            .onDisappear {
+                unsubscribeFromKeyboardNotifications()
+            }
         }
     }
 
     private var fieldsChanged: Bool {
-        name != originalName || email != originalEmail || !password.isEmpty
-    }
-
-    private func getAuthToken() -> String? {
-        let token = UserDefaults.standard.string(forKey: "authToken")
-        return token?.isEmpty == false ? token : nil
+        name != originalName || email != originalEmail || !password.isEmpty || !newPassword.isEmpty
     }
 
     func fetchAccount() {
-        guard let token = getAuthToken(),
-              let url = URL(string: Endpoints.account) else { return }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
         isLoading = true
         fetchFailed = false
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        APIClient.shared.fetchAccount { result in
             DispatchQueue.main.async {
                 isLoading = false
-                if let error = error {
+                switch result {
+                case .success(let account):
+                    // Only update the originals, not the text field bindings, to keep fields editable
+                    if name.isEmpty { name = account.name }
+                    if email.isEmpty { email = account.email }
+                    originalName = account.name
+                    originalEmail = account.email
+                case .failure(let error):
                     statusMessage = error.localizedDescription
                     fetchFailed = true
-                    return
                 }
-                guard let data = data,
-                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                    statusMessage = "Failed to load account."
-                    fetchFailed = true
-                    return
-                }
-                name = json["name"] as? String ?? ""
-                email = json["email"] as? String ?? ""
-                originalName = name
-                originalEmail = email
             }
-        }.resume()
+        }
     }
 
     func updateAccount() {
-        guard let token = getAuthToken(),
-              let url = URL(string: Endpoints.account) else { return }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        var payload: [String: String] = [
-            "name": name,
-            "email": email
-        ]
-        if !password.isEmpty {
-            payload["password"] = password
-        }
-
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: payload) else { return }
-        request.httpBody = httpBody
-
         isLoading = true
         statusMessage = nil
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        let lowercasedEmail = email.lowercased()
+        APIClient.shared.updateAccount(name: name, email: lowercasedEmail, currentPassword: password, newPassword: newPassword) { result in
             DispatchQueue.main.async {
                 isLoading = false
-                if let error = error {
-                    statusMessage = error.localizedDescription
-                    return
+                switch result {
+                case .success:
+                    password = ""
+                    newPassword = ""
+                    focusedField = nil // Remove focus from all fields
+                    showCheckmark = true
+                    withAnimation {
+                        showCheckmark = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                        withAnimation {
+                            showCheckmark = false
+                        }
+                    }
+                    fetchAccount()
+                case .failure(let error):
+                    if let apiError = error as? APIClient.APIError, case .unauthorized(let message) = apiError {
+                        statusMessage = message
+                    } else {
+                        statusMessage = error.localizedDescription
+                    }
                 }
-                statusMessage = "Account updated!"
-                password = ""
-                originalName = name
-                originalEmail = email
             }
-        }.resume()
+        }
+    }
+
+    // Keyboard handling
+    private func subscribeToKeyboardNotifications() {
+        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notif in
+            if let frame = notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+                withAnimation { keyboardHeight = frame.height - (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0) }
+            }
+        }
+        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
+            withAnimation { keyboardHeight = 0 }
+        }
+    }
+    private func unsubscribeFromKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
 
