@@ -193,7 +193,6 @@ struct PollOptionView: View {
             }
             .padding()
         }
-        .navigationTitle("Add Option")
     }
 
     func searchRestaurants() {

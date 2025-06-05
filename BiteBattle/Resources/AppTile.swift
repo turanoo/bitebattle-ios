@@ -26,12 +26,12 @@ struct AppTile<Content: View>: View {
             }
         }
         .background(isSelected ? AppColors.tileSelected : AppColors.tileBackground)
-        .cornerRadius(14)
+        .cornerRadius(16)
         .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(isSelected ? AppColors.accent : Color.clear, lineWidth: isSelected ? 2 : 0)
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(isSelected ? AppColors.primary : AppColors.border, lineWidth: isSelected ? 2 : 1)
         )
-        .shadow(color: Color.black.opacity(0.04), radius: 2, x: 0, y: 1)
+        .shadow(color: AppColors.primary.opacity(0.06), radius: 3, x: 0, y: 2)
         .animation(.easeInOut(duration: 0.18), value: isSelected)
     }
 

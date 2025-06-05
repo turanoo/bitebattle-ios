@@ -28,22 +28,26 @@ public struct AppButton: View {
             HStack {
                 if let icon = icon {
                     Image(systemName: icon)
-                        .foregroundColor(foreground)
+                        .foregroundColor(AppColors.textOnPrimary)
                 }
                 if isLoading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: foreground))
+                        .progressViewStyle(CircularProgressViewStyle(tint: AppColors.textOnPrimary))
                 } else {
                     Text(title)
                         .fontWeight(.semibold)
-                        .foregroundColor(foreground)
+                        .foregroundColor(AppColors.textOnPrimary)
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: 44)
+            .frame(maxWidth: .infinity, minHeight: 48)
             .padding(.vertical, 2)
-            .background(isDisabled ? Color.gray.opacity(0.5) : background)
-            .cornerRadius(12)
-            .shadow(color: background.opacity(0.15), radius: 2, x: 0, y: 1)
+            .background(isDisabled ? AppColors.disabled : background)
+            .cornerRadius(14)
+            .shadow(color: background.opacity(0.12), radius: 3, x: 0, y: 2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(AppColors.border, lineWidth: 1)
+            )
             .scaleEffect(isDisabled ? 1.0 : 0.98, anchor: .center)
             .animation(.easeInOut(duration: 0.15), value: isDisabled)
         }

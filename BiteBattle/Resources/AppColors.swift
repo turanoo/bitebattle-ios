@@ -4,40 +4,29 @@ import SwiftUI
 
 // Ensure all properties and struct are public for cross-file access
 public struct AppColors {
-    // Cream/Backgrounds (ordered by your list)
-    public static let cream        = Color(hex: "#fff7e3") // Soft off-white / light cream
-    public static let creamAlt     = Color(hex: "#fff7e4") // Slight variation of cream
-    public static let creamLight   = Color(hex: "#fff8e4") // Light cream tone
-    public static let creamSofter  = Color(hex: "#fff8e3") // Slightly different cream
-    public static let creamSoftest = Color(hex: "#fff8e5") // Another soft variant
-    public static let creamPale    = Color(hex: "#ffffec") // Pale yellow-white
-    public static let creamPastel  = Color(hex: "#fffae6") // Light pastel yellow
-    public static let creamUltra   = Color(hex: "#fffce8") // Softest cream tone
-    public static let creamVar     = Color(hex: "#fff9e5") // Cream variation
-
-    // Brown/Accent
-    public static let brown        = Color(hex: "#a0522d") // Warm brown (used in fork)
-
-    // Accent/Primary
-    public static let orange   = Color(hex: "#ffa43d") // Warm orange (used in fork/text)
-    public static let primary  = orange
-    public static let accent   = orange
-    public static let secondary = creamPastel // Add this line
-
-    // Surfaces and backgrounds
-    public static let surface    = cream
-    public static let background = cream
+    // Modern, accessible palette
+    public static let primary      = Color(hex: "#2563eb") // Blue 600
+    public static let secondary    = Color(hex: "#f59e42") // Orange 400
+    public static let background   = Color(hex: "#f8fafc") // Gray 50
+    public static let surface      = Color(hex: "#ffffff") // White
+    public static let accent       = Color(hex: "#10b981") // Emerald 500
+    public static let error        = Color(hex: "#ef4444") // Red 500
+    public static let border       = Color(hex: "#e2e8f0") // Gray 200
 
     // Text
-    public static let textPrimary    = Color.black
+    public static let textPrimary    = Color(hex: "#1e293b") // Gray 800
+    public static let textSecondary  = Color(hex: "#64748b") // Gray 500
     public static let textOnPrimary  = Color.white
-    public static let textSecondary  = Color.gray
+    public static let textOnSecondary = Color.white
 
     // UI States
-    public static let error        = Color.red
-    public static let tileBackground = Color.white.opacity(0.12)
-    public static let tileSelected   = orange.opacity(0.15)
-    public static let disabled       = Color.gray.opacity(0.5)
+    public static let tileBackground = Color(hex: "#f1f5f9") // Gray 100
+    public static let tileSelected   = primary.opacity(0.10)
+    public static let disabled       = Color(hex: "#cbd5e1") // Gray 300
+
+    // Legacy color aliases for compatibility
+    public static let orange = primary
+    public static let brown = secondary
 }
 
 // Helper to use hex colors

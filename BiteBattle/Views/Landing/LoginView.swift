@@ -76,7 +76,6 @@ struct LoginView: View {
                     Spacer()
                 }
                 .padding()
-                .navigationTitle("Login")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {

@@ -10,7 +10,7 @@ public struct AppGradientBackground<Content: View>: View {
     public var body: some View {
         ZStack {
             LinearGradient(
-                gradient: Gradient(colors: [Color("#fff7e3"), Color("#ffa43d").opacity(0.7)]),
+                gradient: Gradient(colors: [AppColors.primary.opacity(0.12), AppColors.secondary.opacity(0.18)]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )

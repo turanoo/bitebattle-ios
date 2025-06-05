@@ -41,7 +41,6 @@ struct HomeView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("BiteBattle")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: AccountView()) {

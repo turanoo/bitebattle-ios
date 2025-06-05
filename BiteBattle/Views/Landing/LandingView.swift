@@ -43,7 +43,6 @@ struct LandingView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("Welcome")
         }
     }
 }

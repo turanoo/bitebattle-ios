@@ -17,7 +17,6 @@ struct PollsView: View {
     var body: some View {
         AppBackground {
             VStack(spacing: 20) {
-                TitleText(title: "Your Polls")
                 StatusOrLoadingView(
                     isLoading: isLoading,
                     statusMessage: statusMessage,
@@ -51,7 +50,6 @@ struct PollsView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding()
-            .navigationTitle("Your Polls")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     AccountButton()
@@ -62,9 +60,6 @@ struct PollsView: View {
         .sheet(isPresented: $showAddPoll) {
             AppBackground {
                 VStack(spacing: 16) {
-                    Text("New Poll Name")
-                        .font(.headline)
-                        .foregroundColor(AppColors.textPrimary)
                     AppTextField(placeholder: "Poll Name", text: $newPollName)
                     AppButton(
                         title: isCreatingPoll ? "Creating..." : "Create",
@@ -240,19 +235,19 @@ struct PollsView: View {
         let colorIndex: Int
         var onRefresh: (() -> Void)? = nil
 
-        // Cream color palette
+        // Modern color palette for poll tiles
         private let backgroundColors: [Color] = [
-            Color(hex: "#fff7e3"),
-            Color(hex: "#fff7e4"),
-            Color(hex: "#fff8e4"),
-            Color(hex: "#fff8e3"),
-            Color(hex: "#fff8e5"),
-            Color(hex: "#ffffec"),
-            Color(hex: "#fffae6"),
-            Color(hex: "#fffce8"),
-            Color(hex: "#fff9e5"),
+            AppColors.surface,
+            AppColors.background,
+            AppColors.surface,
+            AppColors.background,
+            AppColors.surface,
+            AppColors.background,
+            AppColors.surface,
+            AppColors.background,
+            AppColors.surface
         ]
-        private let borderColor = Color(hex: "#ffa43d")
+        private let borderColor = AppColors.border
 
         var isOwner: Bool {
             poll.role == "owner"

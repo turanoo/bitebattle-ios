@@ -86,7 +86,6 @@ struct RegisterView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Register")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { presentationMode.wrappedValue.dismiss() }) {

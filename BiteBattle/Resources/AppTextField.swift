@@ -13,17 +13,23 @@ public struct AppTextField: View {
         HStack {
             if let icon = icon {
                 Image(systemName: icon)
-                    .foregroundColor(AppColors.secondary)
+                    .foregroundColor(AppColors.primary)
             }
             if isSecure {
                 SecureField(placeholder, text: $text)
+                    .foregroundColor(AppColors.textPrimary)
             } else {
                 TextField(placeholder, text: $text)
+                    .foregroundColor(AppColors.textPrimary)
             }
         }
         .padding()
-        .background(AppColors.surface.opacity(0.95))
-        .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.03), radius: 1, x: 0, y: 1)
+        .background(AppColors.surface)
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(AppColors.border, lineWidth: 1)
+        )
+        .shadow(color: AppColors.primary.opacity(0.04), radius: 1, x: 0, y: 1)
     }
 }

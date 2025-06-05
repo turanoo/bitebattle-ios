@@ -53,7 +53,6 @@ struct AccountView: View {
                     Spacer()
                 }
                 .padding()
-                .navigationTitle("Account")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: { isLoggedIn = false }) {

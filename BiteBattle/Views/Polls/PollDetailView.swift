@@ -20,7 +20,6 @@ struct PollDetailView: View {
                 addButton
             }
             .padding()
-            .navigationTitle("Poll Detail")
             .onAppear(perform: fetchResults)
         }
     }
