@@ -58,7 +58,7 @@ struct AccountView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { isLoggedIn = false }) {
                         HStack(spacing: 6) {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                            Image(systemName: "arrow.right.square")
                                 .foregroundColor(AppColors.error)
                             Text("Sign Out")
                                 .foregroundColor(AppColors.error)
@@ -66,7 +66,7 @@ struct AccountView: View {
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
                         .background(AppColors.surface)
-                        .cornerRadius(8)
+                        .cornerRadius(10)
                     }
                 }
             }

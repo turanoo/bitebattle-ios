@@ -26,28 +26,16 @@ struct PollOptionView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [Color.pink.opacity(0.7), Color.orange.opacity(0.7)]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-
+            AppColors.background.ignoresSafeArea()
             VStack(spacing: 20) {
-                Text("Search for restaurants")
+                Text("Select Options \(poll.name ?? "")")
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.primary)
                     .padding(.top, 16)
 
                 VStack(spacing: 12) {
-                    TextField("Enter Zip Code", text: $zipCode)
-                        .keyboardType(.numbersAndPunctuation)
-                        .padding()
-                        .background(Color.white.opacity(0.9))
-                        .cornerRadius(10)
-                        .shadow(radius: 1)
-
+                    AppTextField(placeholder: "Enter Zip Code", text: $zipCode, icon: "mappin.and.ellipse")
                     Picker("Category", selection: $selectedCategory) {
                         Text("Select Category").tag("")
                         ForEach(categories, id: \.self) { cat in
@@ -56,36 +44,23 @@ struct PollOptionView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                     .padding()
-                    .background(Color.white.opacity(0.9))
+                    .background(AppColors.surface)
                     .cornerRadius(10)
                     .shadow(radius: 1)
 
-                    Button(action: {
+                    AppButton(title: "Search", icon: "magnifyingglass", background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isSearching, isDisabled: zipCode.isEmpty || selectedCategory.isEmpty || isSearching) {
                         searchRestaurants()
-                    }) {
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.white)
-                            Text("Search")
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .padding()
-                        .background((zipCode.isEmpty || selectedCategory.isEmpty) ? Color.gray.opacity(0.5) : Color.pink.opacity(0.8))
-                        .cornerRadius(12)
-                        .shadow(radius: 2)
                     }
-                    .disabled(zipCode.isEmpty || selectedCategory.isEmpty || isSearching)
                 }
+                .padding(.horizontal, 24)
 
                 if isSearching {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .progressViewStyle(CircularProgressViewStyle(tint: AppColors.primary))
                         .padding()
                 } else if let status = statusMessage {
                     Text(status)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppColors.error)
                         .font(.footnote)
                         .padding(.top, 8)
                         .shadow(radius: 1)
@@ -102,87 +77,74 @@ struct PollOptionView: View {
                                         AsyncImage(url: photoURL(photoRef)) { image in
                                             image.resizable()
                                         } placeholder: {
-                                            Color.gray.opacity(0.3)
+                                            AppColors.disabled // replaces Color.gray.opacity(0.3)
                                         }
                                         .frame(width: 60, height: 60)
                                         .cornerRadius(8)
                                     } else {
-                                        Color.gray.opacity(0.3)
+                                        AppColors.disabled // replaces Color.gray.opacity(0.3)
                                             .frame(width: 60, height: 60)
                                             .cornerRadius(8)
                                     }
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(restaurant.name)
                                             .font(.headline)
-                                            .foregroundColor(.pink)
+                                            .foregroundColor(AppColors.secondary) // replaces .pink
                                         if let rating = restaurant.rating {
                                             Text("Rating: \(String(format: "%.1f", rating))")
                                                 .font(.subheadline)
-                                                .foregroundColor(.white)
+                                                .foregroundColor(AppColors.textOnPrimary) // replaces .white
                                         }
                                         if let address = restaurant.address, !address.isEmpty {
                                             Text(address)
                                                 .font(.caption)
-                                                .foregroundColor(.white)
+                                                .foregroundColor(AppColors.textOnPrimary) // replaces .white
                                         }
                                     }
                                     Spacer()
                                     if selectedRestaurants.contains(restaurant.place_id) {
                                         Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.green)
+                                            .foregroundColor(AppColors.accent) // replaces .green
                                             .font(.title2)
                                     }
                                 }
                                 .padding()
-                                .background(selectedRestaurants.contains(restaurant.place_id) ? Color.green.opacity(0.15) : Color.white.opacity(0.15))
+                                .background(selectedRestaurants.contains(restaurant.place_id) ? AppColors.tileSelected : AppColors.tileBackground)
                                 .cornerRadius(14)
                                 .shadow(radius: 2)
                             }
                         }
                     }
                     .padding(.horizontal, 8)
-}
+                }
 
                 if !searchResults.isEmpty {
-                    Button(action: {
+                    AppButton(title: isSubmitting ? "Submitting..." : "Submit", icon: "paperplane.fill", background: AppColors.secondary, foreground: AppColors.textOnPrimary, isLoading: isSubmitting, isDisabled: selectedRestaurants.isEmpty || isSubmitting) {
                         submitSelectedOptions()
-                    }) {
-                        HStack {
-                            Image(systemName: "paperplane.fill")
-                                .foregroundColor(.white)
-                            Text(isSubmitting ? "Submitting..." : "Submit")
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .padding()
-                        .background(selectedRestaurants.isEmpty || isSubmitting ? Color.gray.opacity(0.5) : Color.orange.opacity(0.8))
-                        .cornerRadius(12)
-                        .shadow(radius: 2)
                     }
-                    .disabled(selectedRestaurants.isEmpty || isSubmitting)
                     .padding(.top, 8)
                 }
 
                 // Show poll results if available
                 if isLoadingResults {
                     ProgressView("Loading Results...")
+                        .progressViewStyle(CircularProgressViewStyle(tint: AppColors.primary))
                         .padding()
                 } else if !pollResults.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Poll Options:")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(AppColors.primary)
                         ForEach(pollResults) { option in
                             HStack {
                                 Text(option.option_name)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(AppColors.textPrimary)
                                 Spacer()
                                 Text("Votes: \(option.vote_count)")
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(AppColors.secondary)
                             }
                             .padding(8)
-                            .background(Color.white.opacity(0.1))
+                            .background(AppColors.tileBackground)
                             .cornerRadius(8)
                         }
                     }
@@ -193,6 +155,7 @@ struct PollOptionView: View {
             }
             .padding()
         }
+        .navigationTitle("Add Option")
     }
 
     func searchRestaurants() {

@@ -11,49 +11,46 @@ struct RegisterView: View {
 
     var body: some View {
         AppBackground {
-            ZStack {
-                // Modern background
-                AppColors.background.ignoresSafeArea()
-                VStack(spacing: 28) {
-                    Spacer()
-                    // Logo
-                    Image(systemName: "fork.knife.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 70, height: 70)
-                        .foregroundColor(AppColors.primary)
-                        .shadow(radius: 8)
+            AppColors.background.ignoresSafeArea()
+            VStack(spacing: 28) {
+                Spacer()
+                // Logo
+                Image(systemName: "fork.knife.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 70, height: 70)
+                    .foregroundColor(AppColors.primary)
+                    .shadow(radius: 8)
 
-                    Text("Create Account")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(AppColors.primary)
-                        .shadow(radius: 3)
+                Text("Create Account")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(AppColors.primary)
+                    .shadow(radius: 3)
 
-                    VStack(spacing: 16) {
-                        AppTextField(placeholder: "Full Name", text: $name, icon: "person")
-                        AppTextField(placeholder: "Email", text: $email, icon: "envelope")
-                        AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
-                    }
-                    .padding(.horizontal, 24)
-
-                    AppButton(title: isLoading ? "Registering..." : "Register", icon: nil, background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: isLoading) {
-                        registerUser()
-                    }
-                    .padding(.horizontal, 24)
-
-                    if let status = registrationStatus {
-                        Text(status)
-                            .foregroundColor(AppColors.error)
-                            .font(.footnote)
-                            .padding(.top, 8)
-                            .shadow(radius: 1)
-                    }
-
-                    Spacer()
+                VStack(spacing: 16) {
+                    AppTextField(placeholder: "Full Name", text: $name, icon: "person")
+                    AppTextField(placeholder: "Email", text: $email, icon: "envelope")
+                    AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
                 }
-                .padding()
+                .padding(.horizontal, 24)
+
+                AppButton(title: isLoading ? "Registering..." : "Register", icon: nil, background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: isLoading) {
+                    registerUser()
+                }
+                .padding(.horizontal, 24)
+
+                if let status = registrationStatus {
+                    Text(status)
+                        .foregroundColor(AppColors.error)
+                        .font(.footnote)
+                        .padding(.top, 8)
+                        .shadow(radius: 1)
+                }
+
+                Spacer()
             }
+            .padding()
         }
     }
 

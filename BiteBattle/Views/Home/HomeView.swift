@@ -97,7 +97,7 @@ struct AppButtonLabel: View {
         }
         .frame(maxWidth: .infinity, minHeight: 44)
         .padding(.vertical, 2)
-        .background(isDisabled ? Color.gray.opacity(0.5) : background)
+        .background(isDisabled ? AppColors.disabled : background)
         .cornerRadius(12)
         .shadow(color: background.opacity(0.15), radius: 2, x: 0, y: 1)
         .scaleEffect(isDisabled ? 1.0 : 0.98, anchor: .center)

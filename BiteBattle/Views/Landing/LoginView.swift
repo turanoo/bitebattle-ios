@@ -10,48 +10,45 @@ struct LoginView: View {
 
     var body: some View {
         AppBackground {
-            ZStack {
-                // Modern background
-                AppColors.background.ignoresSafeArea()
-                VStack(spacing: 28) {
-                    Spacer()
-                    // Logo
-                    Image(systemName: "fork.knife.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 70, height: 70)
-                        .foregroundColor(AppColors.primary)
-                        .shadow(radius: 8)
+            AppColors.background.ignoresSafeArea()
+            VStack(spacing: 28) {
+                Spacer()
+                // Logo
+                Image(systemName: "fork.knife.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 70, height: 70)
+                    .foregroundColor(AppColors.primary)
+                    .shadow(radius: 8)
 
-                    Text("Login")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(AppColors.primary)
-                        .shadow(radius: 3)
+                Text("Login")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(AppColors.primary)
+                    .shadow(radius: 3)
 
-                    VStack(spacing: 16) {
-                        AppTextField(placeholder: "Email", text: $email, icon: "envelope")
-                        AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
-                    }
-                    .padding(.horizontal, 24)
-
-                    AppButton(title: isLoading ? "Logging in..." : "Login", icon: nil, background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: isLoading) {
-                        loginUser()
-                    }
-                    .padding(.horizontal, 24)
-
-                    if let status = loginStatus {
-                        Text(status)
-                            .foregroundColor(AppColors.error)
-                            .font(.footnote)
-                            .padding(.top, 8)
-                            .shadow(radius: 1)
-                    }
-
-                    Spacer()
+                VStack(spacing: 16) {
+                    AppTextField(placeholder: "Email", text: $email, icon: "envelope")
+                    AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
                 }
-                .padding()
+                .padding(.horizontal, 24)
+
+                AppButton(title: isLoading ? "Logging in..." : "Login", icon: nil, background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: isLoading) {
+                    loginUser()
+                }
+                .padding(.horizontal, 24)
+
+                if let status = loginStatus {
+                    Text(status)
+                        .foregroundColor(AppColors.error)
+                        .font(.footnote)
+                        .padding(.top, 8)
+                        .shadow(radius: 1)
+                }
+
+                Spacer()
             }
+            .padding()
         }
     }
 

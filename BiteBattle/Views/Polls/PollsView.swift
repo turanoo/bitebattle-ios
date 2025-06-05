@@ -68,7 +68,7 @@ struct PollsView: View {
                         action: createPoll
                     )
                     Button("Cancel") { showAddPoll = false }
-                        .foregroundColor(.red)
+                        .foregroundColor(AppColors.error)
                 }
                 .padding()
             }
@@ -93,7 +93,7 @@ struct PollsView: View {
                         action: joinPoll
                     )
                     Button("Cancel") { showJoinPoll = false }
-                        .foregroundColor(.red)
+                        .foregroundColor(AppColors.error)
                 }
                 .padding()
             }
@@ -181,7 +181,7 @@ struct PollsView: View {
         var body: some View {
             ZStack {
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.pink.opacity(0.7), Color.orange.opacity(0.7)]),
+                    gradient: Gradient(colors: [AppColors.primary.opacity(0.7), AppColors.secondary.opacity(0.7)]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -197,7 +197,7 @@ struct PollsView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 60, height: 60)
-                .foregroundColor(.pink)
+                .foregroundColor(AppColors.primary)
                 .shadow(radius: 6)
         }
     }
@@ -222,10 +222,10 @@ struct PollsView: View {
                 ProgressView()
             } else if let status = statusMessage {
                 Text(status)
-                    .foregroundColor(.red)
+                    .foregroundColor(AppColors.error)
             } else if isEmpty {
                 Text(emptyText)
-                    .foregroundColor(.gray)
+                    .foregroundColor(AppColors.textSecondary)
             }
         }
     }
@@ -277,20 +277,20 @@ struct PollsView: View {
             VStack(spacing: 8) {
                 HStack {
                     Image(systemName: isOwner ? "crown.fill" : "person.2.fill")
-                        .foregroundColor(isOwner ? borderColor : .gray)
+                        .foregroundColor(isOwner ? borderColor : AppColors.textSecondary)
                         .imageScale(.large)
                     Spacer()
                     if isOwner {
                         HStack(spacing: 16) {
                             Button(action: { showEditSheet = true }) {
                                 Image(systemName: "pencil.circle.fill")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(AppColors.primary)
                                     .imageScale(.large)
                                     .accessibilityLabel("Edit Poll")
                             }
                             Button(action: { showDeleteAlert = true }) {
                                 Image(systemName: "trash.circle.fill")
-                                    .foregroundColor(.red)
+                                    .foregroundColor(AppColors.error)
                                     .imageScale(.large)
                                     .accessibilityLabel("Delete Poll")
                             }
@@ -302,19 +302,19 @@ struct PollsView: View {
                 Text(poll.name ?? "Untitled Poll")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
+                    .foregroundColor(AppColors.textPrimary)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
 
                 Text("By \(poll.created_by ?? "Unknown")")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(AppColors.textSecondary)
                     .multilineTextAlignment(.center)
 
                 HStack {
                     Text(formattedDate)
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(AppColors.textSecondary)
                     Spacer()
                     HStack(spacing: 4) {
                         Image(systemName: "person.3.fill")
@@ -322,7 +322,7 @@ struct PollsView: View {
                             .imageScale(.small)
                         Text("\(numberOfMembers)")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(AppColors.textSecondary)
                     }
                 }
                 .padding(.top, 4)
@@ -336,7 +336,7 @@ struct PollsView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(borderColor, lineWidth: 2)
             )
-            .shadow(color: borderColor.opacity(0.08), radius: 6, x: 0, y: 3)
+            .shadow(color: AppColors.textSecondary.opacity(0.08), radius: 6, x: 0, y: 3)
             .padding(.horizontal, 16)
             .frame(maxWidth: 400)
             .sheet(isPresented: $showEditSheet) {
@@ -396,16 +396,16 @@ struct PollsView: View {
                     Text("Create Poll")
                         .fontWeight(.semibold)
                         .padding()
-                        .background(Color.pink.opacity(0.9))
-                        .foregroundColor(.white)
+                        .background(AppColors.primary.opacity(0.9))
+                        .foregroundColor(AppColors.textOnPrimary)
                         .cornerRadius(10)
                 }
                 Button(action: { showJoinPoll = true }) {
                     Text("Join Poll")
                         .fontWeight(.semibold)
                         .padding()
-                        .background(Color.orange.opacity(0.9))
-                        .foregroundColor(.white)
+                        .background(AppColors.secondary.opacity(0.9))
+                        .foregroundColor(AppColors.textOnPrimary)
                         .cornerRadius(10)
                 }
             }
@@ -418,13 +418,13 @@ struct PollsView: View {
             NavigationLink(destination: AccountView()) {
                 HStack(spacing: 6) {
                     Image(systemName: "person.crop.circle")
-                        .foregroundColor(.white)
+                        .foregroundColor(AppColors.textOnPrimary)
                     Text("Account")
-                        .foregroundColor(.white)
+                        .foregroundColor(AppColors.textOnPrimary)
                 }
                 .padding(.vertical, 6)
                 .padding(.horizontal, 10)
-                .background(Color.pink.opacity(0.7))
+                .background(AppColors.primary.opacity(0.7))
                 .cornerRadius(10)
             }
         }
@@ -452,7 +452,7 @@ struct PollsView: View {
                         }
                     )
                     Button("Cancel") { dismiss() }
-                        .foregroundColor(.red)
+                        .foregroundColor(AppColors.error)
                 }
                 .padding()
             }
