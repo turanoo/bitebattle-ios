@@ -91,7 +91,7 @@ struct RegisterView: View {
     }
 
     func registerUser() {
-        guard let url = URL(string: "http://localhost:8080/api/register") else { return }
+        guard let url = URL(string: Endpoints.register) else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

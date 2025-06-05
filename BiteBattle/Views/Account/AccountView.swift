@@ -30,12 +30,12 @@ struct AccountView: View {
                         .foregroundColor(AppColors.textOnPrimary)
                         .shadow(radius: 4)
 
-                    VStack(spacing: 16) {
+                    VStack(spacing: 18) {
                         AppTextField(placeholder: "Name", text: $name, icon: "person")
                         AppTextField(placeholder: "Email", text: $email, icon: "envelope")
                         AppTextField(placeholder: "Password", text: $password, isSecure: true, icon: "lock")
                     }
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, 0)
 
                     if let status = statusMessage {
                         Text(status)
@@ -45,16 +45,32 @@ struct AccountView: View {
                             .padding(.horizontal)
                     }
 
-                    AppButton(title: "Update", icon: "checkmark.circle", background: AppColors.orange, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading) {
+                    AppButton(title: isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.orange, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading) {
                         updateAccount()
                     }
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, 0)
 
                     Spacer()
                 }
                 .padding()
                 .navigationTitle("Account")
                 .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { isLoggedIn = false }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .foregroundColor(AppColors.error)
+                                Text("Sign Out")
+                                    .foregroundColor(AppColors.error)
+                            }
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 10)
+                            .background(AppColors.surface.opacity(0.7))
+                            .cornerRadius(8)
+                        }
+                    }
+                }
             }
         }
         .onAppear(perform: fetchAccount)

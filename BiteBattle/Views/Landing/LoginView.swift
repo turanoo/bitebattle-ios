@@ -83,7 +83,7 @@ struct LoginView: View {
     }
 
     func loginUser() {
-        guard let url = URL(string: "http://localhost:8080/api/login") else { return }
+        guard let url = URL(string: Endpoints.login) else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

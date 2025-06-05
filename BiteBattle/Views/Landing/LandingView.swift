@@ -1,40 +1,48 @@
 import SwiftUI
 
+// MARK: - Ensure AppColors, AppButton, AppBackground are visible
+// If you get 'Cannot find ... in scope', ensure these files are in the Compile Sources build phase in Xcode.
+// No extra import is needed if they're in the same target.
+
 struct LandingView: View {
+    @State private var showRegister = false
+    @State private var showLogin = false
     var body: some View {
         AppBackground {
-            AppGradientBackground {
-                VStack(spacing: 32) {
-                    Spacer()
-                    // Logo placeholder
-                    Image(systemName: "fork.knife.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(AppColors.textOnPrimary)
-                        .shadow(radius: 10)
+            VStack(spacing: 32) {
+                Spacer()
+                // Logo (match HomeView)
+                Image(systemName: "fork.knife.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80, height: 80)
+                    .foregroundColor(AppColors.orange)
+                    .shadow(radius: 10)
 
-                    Text("Welcome to BiteBattle")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(AppColors.textOnPrimary)
-                        .multilineTextAlignment(.center)
-                        .shadow(radius: 4)
+                Text("Welcome to BiteBattle")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(AppColors.orange)
+                    .multilineTextAlignment(.center)
+                    .shadow(radius: 4)
 
-                    VStack(spacing: 16) {
-                        NavigationLink(destination: RegisterView()) {
-                            AppButton(title: "Register", icon: nil, background: AppColors.surface.opacity(0.9), foreground: AppColors.orange, isLoading: false, isDisabled: false) {}
-                        }
-                        NavigationLink(destination: LoginView()) {
-                            AppButton(title: "Login", icon: nil, background: AppColors.orange.opacity(0.8), foreground: AppColors.textOnPrimary, isLoading: false, isDisabled: false) {}
+                VStack(spacing: 18) {
+                    NavigationLink(destination: RegisterView(), isActive: $showRegister) {
+                        AppButton(title: "Register", icon: nil, background: AppColors.brown.opacity(0.9), foreground: AppColors.orange, isLoading: false, isDisabled: false) {
+                            showRegister = true
                         }
                     }
-                    .padding(.horizontal, 24)
-
-                    Spacer()
+                    NavigationLink(destination: LoginView(), isActive: $showLogin) {
+                        AppButton(title: "Login", icon: nil, background: AppColors.orange.opacity(0.8), foreground: AppColors.textOnPrimary, isLoading: false, isDisabled: false) {
+                            showLogin = true
+                        }
+                    }
                 }
-                .padding()
+                .padding(.horizontal, 24)
+
+                Spacer()
             }
+            .padding()
             .navigationTitle("Welcome")
             .navigationBarTitleDisplayMode(.inline)
         }
