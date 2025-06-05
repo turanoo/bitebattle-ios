@@ -1,4 +1,6 @@
 import SwiftUI
+import Foundation
+import CoreLocation
 
 struct PollDetailView: View {
     let poll: Poll
@@ -58,8 +60,8 @@ struct PollDetailView: View {
         ScrollView {
             VStack(spacing: 18) {
                 ForEach(results) { option in
-                    AppTile {
-                        VStack(alignment: .leading, spacing: 8) {
+                    AppTile(isSelected: false) {
+                        VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Text(option.option_name)
                                     .font(.headline)
@@ -73,18 +75,26 @@ struct PollDetailView: View {
                                     .background(AppColors.secondary.opacity(0.7))
                                     .cornerRadius(8)
                             }
-                            if !option.voter_ids.isEmpty {
-                                Text("Voters: \(option.voter_ids.joined(separator: ", "))")
+                            Divider()
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Voter IDs:")
                                     .font(.caption)
-                                    .foregroundColor(AppColors.textOnPrimary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(AppColors.primary.opacity(0.5))
-                                    .cornerRadius(6)
+                                    .foregroundColor(AppColors.secondary)
+                                if option.voter_ids.isEmpty {
+                                    Text("No votes yet")
+                                        .font(.caption2)
+                                        .foregroundColor(.gray)
+                                } else {
+                                    ForEach(option.voter_ids, id: \.self) { voter in
+                                        Text(voter)
+                                            .font(.caption2)
+                                            .foregroundColor(AppColors.textOnPrimary)
+                                    }
+                                }
                             }
                         }
+                        .padding(10)
                     }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
             .padding(.horizontal, 12)
@@ -111,32 +121,20 @@ struct PollDetailView: View {
     }
 
     private func fetchResults() {
-        guard let token = UserDefaults.standard.string(forKey: "authToken"),
-              let url = URL(string: Endpoints.pollResults(poll.id)) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         isLoading = true
         statusMessage = nil
         results = []
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        APIClient.shared.fetchPollResults(pollId: poll.id) { result in
             DispatchQueue.main.async {
                 isLoading = false
-                if let error = error {
-                    statusMessage = error.localizedDescription
-                    return
-                }
-                guard let data = data else {
-                    statusMessage = "No data received."
-                    return
-                }
-                do {
-                    results = try JSONDecoder().decode([PollOptionResult].self, from: data)
-                } catch {
+                switch result {
+                case .success(let pollOptions):
+                    results = pollOptions
+                case .failure(let error):
                     statusMessage = error.localizedDescription
                 }
             }
-        }.resume()
+        }
     }
 }
 

@@ -2,6 +2,11 @@ import SwiftUI
 import CoreLocation
 import Foundation
 
+// Add model imports so types are available
+// These are in the same target, so just ensure the files are in Compile Sources
+// If not, use the correct module import if needed
+// import BiteBattle_Core_Models (if using modules)
+
 struct PollOptionView: View {
     let poll: Poll
     @Environment(\.presentationMode) var presentationMode
@@ -13,6 +18,8 @@ struct PollOptionView: View {
     @State private var searchResults: [Restaurant] = []
     @State private var selectedRestaurants: Set<String> = []
     @State private var isSubmitting: Bool = false
+    @State private var pollResults: [PollOptionResult] = []
+    @State private var isLoadingResults: Bool = false
 
     // Example categories
     let categories = ["Pizza", "Sushi", "Italian", "Ramen", "Burgers", "Mexican", "Chinese", "Indian", "Thai"]
@@ -157,6 +164,31 @@ struct PollOptionView: View {
                     .padding(.top, 8)
                 }
 
+                // Show poll results if available
+                if isLoadingResults {
+                    ProgressView("Loading Results...")
+                        .padding()
+                } else if !pollResults.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Poll Options:")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                        ForEach(pollResults) { option in
+                            HStack {
+                                Text(option.option_name)
+                                    .foregroundColor(.white)
+                                Spacer()
+                                Text("Votes: \(option.vote_count)")
+                                    .foregroundColor(.orange)
+                            }
+                            .padding(8)
+                            .background(Color.white.opacity(0.1))
+                            .cornerRadius(8)
+                        }
+                    }
+                    .padding(.top, 16)
+                }
+
                 Spacer()
             }
             .padding()
@@ -257,7 +289,13 @@ struct PollOptionView: View {
                     statusMessage = "Failed: \(error.localizedDescription)"
                     return
                 }
-                presentationMode.wrappedValue.dismiss()
+                if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
+                    // Dismiss the sheet after successful submit
+                    presentationMode.wrappedValue.dismiss()
+                } else {
+                    let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+                    statusMessage = "Failed: Server error (\(code))"
+                }
             }
         }.resume()
     }
