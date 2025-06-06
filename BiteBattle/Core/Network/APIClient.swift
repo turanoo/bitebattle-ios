@@ -257,6 +257,31 @@ final class APIClient {
         }.resume()
     }
 
+    // MARK: - Voting
+    func vote(pollId: String, optionId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: Endpoints.base + "/polls/\(pollId)/vote"),
+              let body = try? JSONSerialization.data(withJSONObject: ["option_id": optionId]),
+              let request = makeRequest(url: url, method: "POST", body: body, contentType: "application/json") else {
+            completion(.failure(APIError.notLoggedIn)); return
+        }
+        URLSession.shared.dataTask(with: request) { _, _, error in
+            if let error = error { completion(.failure(error)); return }
+            completion(.success(()))
+        }.resume()
+    }
+
+    func unvote(pollId: String, optionId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: Endpoints.base + "/polls/\(pollId)/unvote"),
+              let body = try? JSONSerialization.data(withJSONObject: ["option_id": optionId]),
+              let request = makeRequest(url: url, method: "POST", body: body, contentType: "application/json") else {
+            completion(.failure(APIError.notLoggedIn)); return
+        }
+        URLSession.shared.dataTask(with: request) { _, _, error in
+            if let error = error { completion(.failure(error)); return }
+            completion(.success(()))
+        }.resume()
+    }
+
     enum APIError: Error {
         case notLoggedIn
         case noData

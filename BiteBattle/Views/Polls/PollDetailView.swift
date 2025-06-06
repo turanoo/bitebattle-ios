@@ -9,6 +9,7 @@ struct PollDetailView: View {
     @State private var isLoading: Bool = false
     @State private var statusMessage: String?
     @State private var showAddOption: Bool = false
+    @State private var currentUserId: String? = nil
 
     var body: some View {
         AppBackground {
@@ -20,7 +21,10 @@ struct PollDetailView: View {
                 addButton
             }
             .padding()
-            .onAppear(perform: fetchResults)
+            .onAppear {
+                fetchResults()
+                fetchCurrentUserId()
+            }
         }
     }
 
@@ -92,6 +96,26 @@ struct PollDetailView: View {
                                 }
                             }
                         }
+                        // Voting/Unvoting Button
+                        if let userId = currentUserId {
+                            let hasVoted = option.voter_ids.contains(userId)
+                            AppButton(
+                                title: hasVoted ? "Unvote" : "Vote",
+                                icon: hasVoted ? "xmark.circle" : "checkmark.circle",
+                                background: hasVoted ? AppColors.error : AppColors.primary,
+                                foreground: AppColors.textOnPrimary,
+                                isLoading: false,
+                                isDisabled: isLoading,
+                                action: {
+                                    if hasVoted {
+                                        unvote(optionId: option.option_id)
+                                    } else {
+                                        vote(optionId: option.option_id)
+                                    }
+                                }
+                            )
+                            .padding(.top, 8)
+                        }
                     }
                     .padding()
                     .background(
@@ -141,6 +165,51 @@ struct PollDetailView: View {
                 switch result {
                 case .success(let pollOptions):
                     results = pollOptions
+                case .failure(let error):
+                    statusMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    private func fetchCurrentUserId() {
+        APIClient.shared.fetchAccount { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let account):
+                    currentUserId = account.id // assumes AccountInfo has id
+                case .failure:
+                    currentUserId = nil
+                }
+            }
+        }
+    }
+
+    private func vote(optionId: String) {
+        isLoading = true
+        statusMessage = nil
+        APIClient.shared.vote(pollId: poll.id, optionId: optionId) { result in
+            DispatchQueue.main.async {
+                isLoading = false
+                switch result {
+                case .success:
+                    fetchResults()
+                case .failure(let error):
+                    statusMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    private func unvote(optionId: String) {
+        isLoading = true
+        statusMessage = nil
+        APIClient.shared.unvote(pollId: poll.id, optionId: optionId) { result in
+            DispatchQueue.main.async {
+                isLoading = false
+                switch result {
+                case .success:
+                    fetchResults()
                 case .failure(let error):
                     statusMessage = error.localizedDescription
                 }

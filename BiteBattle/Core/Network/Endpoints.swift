@@ -13,4 +13,6 @@ struct Endpoints {
     static var register: String { "\(base)/register" }
     static func updatePoll(_ id: String) -> String { "\(base)/polls/\(id)" }
     static func deletePoll(_ id: String) -> String { "\(base)/polls/\(id)" }
+    static func vote(_ pollId: String) -> String { "\(base)/polls/\(pollId)/vote" }
+    static func unvote(_ pollId: String) -> String { "\(base)/polls/\(pollId)/unvote" }
 }
