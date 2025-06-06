@@ -15,89 +15,92 @@ struct PollsView: View {
     @State private var selectedPoll: Poll? = nil
 
     var body: some View {
-        AppBackground {
-            VStack(spacing: 20) {
-                StatusOrLoadingView(
-                    isLoading: isLoading,
-                    statusMessage: statusMessage,
-                    isEmpty: polls.isEmpty,
-                    emptyText: "No polls yet. Create or join one!"
-                )
-                // Hidden NavigationLink for programmatic navigation
-                if let selectedPoll = selectedPoll {
-                    NavigationLink(
-                        destination: PollDetailView(poll: selectedPoll),
-                        isActive: Binding(
-                            get: { self.selectedPoll != nil },
-                            set: { if !$0 { self.selectedPoll = nil } }
-                        )
-                    ) {
-                        EmptyView()
+        NavigationStack {
+            AppBackground {
+                VStack(spacing: 20) {
+                    HStack(spacing: 12) {
+                        AppIcon()
                     }
-                    .hidden()
-                }
-                PollsListView(polls: polls, onRefresh: { fetchPolls() })
-                PollActionButtons(
-                    showAddPoll: $showAddPoll,
-                    showJoinPoll: $showJoinPoll,
-                    newPollName: $newPollName,
-                    isCreatingPoll: $isCreatingPoll,
-                    createPoll: createPoll,
-                    inviteCode: $inviteCode,
-                    isJoiningPoll: $isJoiningPoll,
-                    joinPoll: joinPoll
-                )
-                .frame(maxWidth: .infinity, alignment: .center)
-            }
-            .padding()
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    AccountButton()
-                }
-            }
-            .onAppear { fetchPolls() }
-        }
-        .sheet(isPresented: $showAddPoll) {
-            AppBackground {
-                VStack(spacing: 16) {
-                    AppTextField(placeholder: "Poll Name", text: $newPollName)
-                    AppButton(
-                        title: isCreatingPoll ? "Creating..." : "Create",
-                        isLoading: isCreatingPoll,
-                        isDisabled: newPollName.isEmpty,
-                        action: createPoll
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 8)
+                    StatusOrLoadingView(
+                        isLoading: isLoading,
+                        statusMessage: statusMessage,
+                        isEmpty: polls.isEmpty,
+                        emptyText: "No polls yet. Create or join one!"
                     )
-                    Button("Cancel") { showAddPoll = false }
-                        .foregroundColor(AppColors.error)
+                    // Hidden navigationDestination for programmatic navigation
+                    .navigationDestination(isPresented: Binding(
+                        get: { self.selectedPoll != nil },
+                        set: { if !$0 { self.selectedPoll = nil } }
+                    )) {
+                        if let selectedPoll = selectedPoll {
+                            PollDetailView(poll: selectedPoll)
+                        }
+                    }
+                    PollsListView(polls: polls, onRefresh: { fetchPolls() })
+                    PollActionButtons(
+                        showAddPoll: $showAddPoll,
+                        showJoinPoll: $showJoinPoll,
+                        newPollName: $newPollName,
+                        isCreatingPoll: $isCreatingPoll,
+                        createPoll: createPoll,
+                        inviteCode: $inviteCode,
+                        isJoiningPoll: $isJoiningPoll,
+                        joinPoll: joinPoll
+                    )
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .padding()
+                .onAppear { fetchPolls() }
             }
-            .interactiveDismissDisabled(isCreatingPoll)
-            .onChange(of: isCreatingPoll) { newValue in
-                if !newValue {
-                    showAddPoll = false
+            .sheet(isPresented: $showAddPoll) {
+                AppBackground {
+                    VStack(spacing: 16) {
+                        AppTextField(placeholder: "Poll Name", text: $newPollName)
+                        AppButton(
+                            title: isCreatingPoll ? "Creating..." : "Create",
+                            isLoading: isCreatingPoll,
+                            isDisabled: newPollName.isEmpty,
+                            action: createPoll
+                        )
+                        Button("Cancel") { showAddPoll = false }
+                            .foregroundColor(AppColors.error)
+                    }
+                    .padding()
                 }
+                .interactiveDismissDisabled(isCreatingPoll)
+                .onChange(of: isCreatingPoll) { _, _ in
+                    if !isCreatingPoll {
+                        showAddPoll = false
+                    }
+                }
+            }
+            .sheet(isPresented: $showJoinPoll) {
+                AppBackground {
+                    VStack(spacing: 16) {
+                        Text("Enter Invite Code")
+                            .font(.headline)
+                            .foregroundColor(AppColors.textPrimary)
+                        AppTextField(placeholder: "Invite Code", text: $inviteCode)
+                        AppButton(
+                            title: isJoiningPoll ? "Joining..." : "Join",
+                            isLoading: isJoiningPoll,
+                            isDisabled: inviteCode.isEmpty,
+                            action: joinPoll
+                        )
+                        Button("Cancel") { showJoinPoll = false }
+                            .foregroundColor(AppColors.error)
+                    }
+                    .padding()
+                }
+                .interactiveDismissDisabled(isJoiningPoll)
             }
         }
-        .sheet(isPresented: $showJoinPoll) {
-            AppBackground {
-                VStack(spacing: 16) {
-                    Text("Enter Invite Code")
-                        .font(.headline)
-                        .foregroundColor(AppColors.textPrimary)
-                    AppTextField(placeholder: "Invite Code", text: $inviteCode)
-                    AppButton(
-                        title: isJoiningPoll ? "Joining..." : "Join",
-                        isLoading: isJoiningPoll,
-                        isDisabled: inviteCode.isEmpty,
-                        action: joinPoll
-                    )
-                    Button("Cancel") { showJoinPoll = false }
-                        .foregroundColor(AppColors.error)
-                }
-                .padding()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                AccountNavButton()
             }
-            .interactiveDismissDisabled(isJoiningPoll)
         }
     }
 
@@ -235,31 +238,21 @@ struct PollsView: View {
         let colorIndex: Int
         var onRefresh: (() -> Void)? = nil
 
-        // Modern color palette for poll tiles
-        private let backgroundColors: [Color] = [
-            AppColors.surface,
-            AppColors.background,
-            AppColors.surface,
-            AppColors.background,
-            AppColors.surface,
-            AppColors.background,
-            AppColors.surface,
-            AppColors.background,
-            AppColors.surface
-        ]
+        // Use color palette from AppColors
+        private let backgroundColors = AppColors.pollTileColors
         private let borderColor = AppColors.border
 
         var isOwner: Bool {
             poll.role == "owner"
         }
 
-        // Format the created_at string to a date string, or show as-is if parsing fails
+        // Format the created_at string to MM/dd/yy, or show as-is if parsing fails
         var formattedDate: String {
             let input = poll.created_at ?? ""
             let isoFormatter = ISO8601DateFormatter()
             if let date = isoFormatter.date(from: input) {
                 let formatter = DateFormatter()
-                formatter.dateStyle = .medium
+                formatter.dateFormat = "MM/dd/yy"
                 return formatter.string(from: date)
             } else {
                 return input.isEmpty ? "Unknown date" : input
@@ -277,7 +270,7 @@ struct PollsView: View {
             VStack(spacing: 8) {
                 HStack {
                     Image(systemName: isOwner ? "crown.fill" : "person.2.fill")
-                        .foregroundColor(isOwner ? borderColor : AppColors.textSecondary)
+                        .foregroundColor(AppColors.textSecondary)
                         .imageScale(.large)
                     Spacer()
                     if isOwner {
@@ -306,10 +299,6 @@ struct PollsView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
 
-                Text("By \(poll.created_by ?? "Unknown")")
-                    .font(.subheadline)
-                    .foregroundColor(AppColors.textSecondary)
-                    .multilineTextAlignment(.center)
 
                 HStack {
                     Text(formattedDate)
@@ -410,23 +399,6 @@ struct PollsView: View {
                 }
             }
             .padding(.top, 12)
-        }
-    }
-
-    struct AccountButton: View {
-        var body: some View {
-            NavigationLink(destination: AccountView()) {
-                HStack(spacing: 6) {
-                    Image(systemName: "person.crop.circle")
-                        .foregroundColor(AppColors.textOnPrimary)
-                    Text("Account")
-                        .foregroundColor(AppColors.textOnPrimary)
-                }
-                .padding(.vertical, 6)
-                .padding(.horizontal, 10)
-                .background(AppColors.primary.opacity(0.7))
-                .cornerRadius(10)
-            }
         }
     }
 

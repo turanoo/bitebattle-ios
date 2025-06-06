@@ -8,42 +8,46 @@ struct LandingView: View {
     @State private var showRegister = false
     @State private var showLogin = false
     var body: some View {
-        AppBackground {
-            VStack(spacing: 32) {
-                Spacer()
-                // Logo (match HomeView)
-                Image(systemName: "fork.knife.circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .foregroundColor(AppColors.primary)
-                    .shadow(radius: 10)
+        NavigationStack {
+            AppBackground {
+                VStack(spacing: 32) {
+                    Spacer()
+                    // Logo (match HomeView)
+                    Image(systemName: "fork.knife.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(AppColors.primary)
+                        .shadow(radius: 10)
 
-                Text("Welcome to BiteBattle")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(AppColors.primary)
-                    .multilineTextAlignment(.center)
-                    .shadow(radius: 4)
+                    Text("Welcome to BiteBattle")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(AppColors.primary)
+                        .multilineTextAlignment(.center)
+                        .shadow(radius: 4)
 
-                VStack(spacing: 18) {
-                    NavigationLink(destination: RegisterView(), isActive: $showRegister) {
+                    VStack(spacing: 18) {
                         AppButton(title: "Register", icon: nil, background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: false, isDisabled: false) {
                             showRegister = true
                         }
-                    }
-                    NavigationLink(destination: LoginView(), isActive: $showLogin) {
                         AppButton(title: "Login", icon: nil, background: AppColors.secondary, foreground: AppColors.textOnPrimary, isLoading: false, isDisabled: false) {
                             showLogin = true
                         }
                     }
-                }
-                .padding(.horizontal, 24)
+                    .padding(.horizontal, 24)
 
-                Spacer()
+                    Spacer()
+                }
+                .padding()
+                .background(AppColors.background.ignoresSafeArea())
             }
-            .padding()
-            .background(AppColors.background.ignoresSafeArea())
+            .navigationDestination(isPresented: $showRegister) {
+                RegisterView()
+            }
+            .navigationDestination(isPresented: $showLogin) {
+                LoginView()
+            }
         }
     }
 }

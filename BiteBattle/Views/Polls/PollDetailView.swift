@@ -28,7 +28,7 @@ struct PollDetailView: View {
         Text(poll.name ?? "Untitled Poll")
             .font(.largeTitle)
             .fontWeight(.bold)
-            .foregroundColor(AppColors.textOnPrimary)
+            .foregroundColor(AppColors.textPrimary)
             .shadow(radius: 2)
             .padding(.top, 24)
     }
@@ -56,47 +56,59 @@ struct PollDetailView: View {
     }
 
     private var optionsListView: some View {
-        ScrollView {
+        let backgroundColors = AppColors.pollTileColors
+        let borderColor = AppColors.border
+        return ScrollView {
             VStack(spacing: 18) {
-                ForEach(results) { option in
-                    AppTile(isSelected: false) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Text(option.option_name)
-                                    .font(.headline)
-                                    .foregroundColor(AppColors.secondary)
-                                Spacer()
-                                Text("Votes: \(option.vote_count)")
-                                    .font(.subheadline)
-                                    .foregroundColor(AppColors.textOnPrimary)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 2)
-                                    .background(AppColors.secondary.opacity(0.7))
-                                    .cornerRadius(8)
-                            }
-                            Divider()
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Voter IDs:")
-                                    .font(.caption)
-                                    .foregroundColor(AppColors.secondary)
-                                if option.voter_ids.isEmpty {
-                                    Text("No votes yet")
+                ForEach(Array(results.enumerated()), id: \.element.option_id) { (idx, option) in
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Text(option.option_name)
+                                .font(.headline)
+                                .foregroundColor(AppColors.secondary)
+                            Spacer()
+                            Text("Votes: \(option.vote_count)")
+                                .font(.subheadline)
+                                .foregroundColor(AppColors.textOnPrimary)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(AppColors.secondary.opacity(0.7))
+                                .cornerRadius(8)
+                        }
+                        Divider()
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Voter IDs:")
+                                .font(.caption)
+                                .foregroundColor(AppColors.secondary)
+                            if option.voter_ids.isEmpty {
+                                Text("No votes yet")
+                                    .font(.caption2)
+                                    .foregroundColor(.gray)
+                            } else {
+                                ForEach(option.voter_ids, id: \.self) { voter in
+                                    Text(voter)
                                         .font(.caption2)
-                                        .foregroundColor(.gray)
-                                } else {
-                                    ForEach(option.voter_ids, id: \.self) { voter in
-                                        Text(voter)
-                                            .font(.caption2)
-                                            .foregroundColor(AppColors.textOnPrimary)
-                                    }
+                                        .foregroundColor(AppColors.textOnPrimary)
                                 }
                             }
                         }
-                        .padding(10)
                     }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(backgroundColors[idx % backgroundColors.count])
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(borderColor, lineWidth: 2)
+                    )
+                    .shadow(color: AppColors.textSecondary.opacity(0.08), radius: 6, x: 0, y: 3)
+                    .padding(.horizontal, 16)
+                    .frame(maxWidth: 400)
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .center)
             .animation(.easeInOut(duration: 0.18), value: results)
         }
     }

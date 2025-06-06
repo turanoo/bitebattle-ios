@@ -27,6 +27,19 @@ public struct AppColors {
     // Legacy color aliases for compatibility
     public static let orange = primary
     public static let brown = secondary
+
+    // Poll tile colors
+    public static let pollTileColors: [Color] = [
+        AppColors.surface,
+        AppColors.background,
+        AppColors.surface,
+        AppColors.background,
+        AppColors.surface,
+        AppColors.background,
+        AppColors.surface,
+        AppColors.background,
+        AppColors.surface
+    ]
 }
 
 // Helper to use hex colors

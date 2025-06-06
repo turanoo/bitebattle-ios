@@ -44,18 +44,7 @@ struct HomeView: View {
             .background(AppColors.background.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: AccountView()) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "person.crop.circle")
-                                .foregroundColor(AppColors.primary)
-                            Text("Account")
-                                .foregroundColor(AppColors.primary)
-                        }
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 10)
-                        .background(AppColors.surface)
-                        .cornerRadius(8)
-                    }
+                    AccountNavButton()
                 }
             }
         }

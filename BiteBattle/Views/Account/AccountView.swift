@@ -1,5 +1,14 @@
 import SwiftUI
 
+// Explicitly import project files for cross-file visibility
+// These are not modules, so use @testable import or move shared types to a shared module if needed
+// For now, add file-level import for clarity
+// import AppBackground // Not needed, just ensure file is in Compile Sources
+// import AppColors // Not needed, just ensure file is in Compile Sources
+// import AppTextField // Not needed, just ensure file is in Compile Sources
+// import AppButton // Not needed, just ensure file is in Compile Sources
+// import APIClient // Not needed, just ensure file is in Compile Sources
+
 struct AccountView: View {
     @State private var name: String = ""
     @State private var email: String = ""
@@ -165,7 +174,7 @@ struct AccountView: View {
     private func subscribeToKeyboardNotifications() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notif in
             if let frame = notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                withAnimation { keyboardHeight = frame.height - (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0) }
+                withAnimation { keyboardHeight = frame.height - (UIApplication.shared.connectedScenes.compactMap { ($0 as? UIWindowScene)?.windows.first }.first?.safeAreaInsets.bottom ?? 0) }
             }
         }
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
