@@ -4,7 +4,7 @@ struct AppRouter: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             if isLoggedIn {
                 HomeView()
             } else {
