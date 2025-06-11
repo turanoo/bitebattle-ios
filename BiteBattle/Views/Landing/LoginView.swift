@@ -50,6 +50,7 @@ struct LoginView: View {
             }
             .padding()
         }
+        .hideKeyboardOnTap()
     }
 
     func loginUser() {

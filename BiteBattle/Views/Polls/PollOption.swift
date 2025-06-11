@@ -52,6 +52,7 @@ struct PollOptionView: View {
                         searchRestaurants()
                     }
                 }
+                .hideKeyboardOnTap()
                 .padding(.horizontal, 24)
 
                 if isSearching {

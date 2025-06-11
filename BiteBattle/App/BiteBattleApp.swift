@@ -6,6 +6,7 @@ struct BiteBattleApp: App {
     var body: some Scene {
         WindowGroup {
             AppRouter()
+                .preferredColorScheme(.light)
         }
     }
 }

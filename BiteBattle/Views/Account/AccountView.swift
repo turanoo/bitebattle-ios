@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 // Explicitly import project files for cross-file visibility
 // These are not modules, so use @testable import or move shared types to a shared module if needed
@@ -10,6 +11,7 @@ import SwiftUI
 // import APIClient // Not needed, just ensure file is in Compile Sources
 
 struct AccountView: View {
+    @StateObject var viewModel = ProfileViewModel()
     @State private var name: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
@@ -44,12 +46,24 @@ struct AccountView: View {
                     }
 
                     Spacer()
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80, height: 80)
-                        .foregroundColor(AppColors.primary)
-                        .shadow(radius: 8)
+                    PhotosPicker(selection: $viewModel.selectedItem) {
+                        if let profileImage = viewModel.profileImage {
+                            profileImage
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .clipShape(Circle())
+                        }
+                        else {
+                            Image(systemName: "person.crop.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .foregroundColor(AppColors.primary)
+                                .shadow(radius: 8)
+                        }
+                    }
+                   
 
                     Text("Account")
                         .font(.largeTitle)
@@ -106,6 +120,7 @@ struct AccountView: View {
                     }
                 }
             }
+            .hideKeyboardOnTap()
             .onAppear {
                 fetchAccount()
                 subscribeToKeyboardNotifications()
