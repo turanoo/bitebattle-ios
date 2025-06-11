@@ -52,6 +52,7 @@ struct RegisterView: View {
             }
             .padding()
         }
+        .hideKeyboardOnTap()
     }
 
     func registerUser() {
@@ -74,6 +75,18 @@ struct RegisterView: View {
         }
     }
 }
+
+extension View {
+  func hideKeyboardOnTap() -> some View {
+    onTapGesture {
+      UIApplication.shared.sendAction(
+        #selector(UIResponder.resignFirstResponder),
+        to: nil, from: nil, for: nil
+      )
+    }
+  }
+}
+
 
 #if DEBUG
 struct RegisterView_Previews: PreviewProvider {
