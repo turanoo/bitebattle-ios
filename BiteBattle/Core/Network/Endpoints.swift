@@ -2,7 +2,15 @@
 // Centralized API endpoints
 
 struct Endpoints {
-    static let base = "http://localhost:8080/api"
+    
+#if targetEnvironment(simulator)
+  // Simulator: can hit localhost on your Mac
+  static let base = "http://localhost:8080/api"
+  #else
+  // Device: hit your Mac’s local IP
+  static let base = "http:/your_local_IP:8080/api"
+  #endif
+    
     static var polls: String { "\(base)/polls" }
     static func joinPoll(pollId: String) -> String { "\(base)/polls/\(pollId)/join" }
     static func pollResults(_ id: String) -> String { "\(base)/polls/\(id)/results" }
