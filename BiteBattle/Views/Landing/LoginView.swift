@@ -63,6 +63,7 @@ struct LoginView: View {
                 case .success(let token):
                     UserDefaults.standard.set(token, forKey: "authToken")
                     isLoggedIn = true
+                    presentationMode.wrappedValue.dismiss()
                     loginStatus = "Logged in!"
                 case .failure(let error):
                     loginStatus = "Failed: \(error.localizedDescription)"

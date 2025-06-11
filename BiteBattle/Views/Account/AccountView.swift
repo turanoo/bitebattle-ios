@@ -23,6 +23,7 @@ struct AccountView: View {
     @State private var keyboardHeight: CGFloat = 0
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     @FocusState private var focusedField: Field?
+    @Environment(\.dismiss) private var dismiss
 
     enum Field: Hashable {
         case name, email, password, newPassword
@@ -88,7 +89,10 @@ struct AccountView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { isLoggedIn = false }) {
+                    Button(action: {
+                        isLoggedIn = false
+                        dismiss()
+                    }) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.right.square")
                                 .foregroundColor(AppColors.error)

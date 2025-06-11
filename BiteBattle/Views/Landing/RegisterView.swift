@@ -65,6 +65,7 @@ struct RegisterView: View {
                 case .success(let token):
                     UserDefaults.standard.set(token, forKey: "authToken")
                     isLoggedIn = true
+                    presentationMode.wrappedValue.dismiss()
                     registrationStatus = "Successfully registered!"
                 case .failure(let error):
                     registrationStatus = "Failed: \(error.localizedDescription)"
