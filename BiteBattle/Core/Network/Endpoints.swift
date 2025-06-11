@@ -7,7 +7,7 @@ struct Endpoints {
   static let base = "http://localhost:8080/api"
   #else
   // Device: hit your Mac’s local IP
-  static let base = "http://192.168.0.43:8080/api" //zz change to your_computer_IP
+  static let base = "http://your_computer_IP:8080/api"
   #endif
     static var polls: String { "\(base)/polls" }
     static func joinPoll(pollId: String) -> String { "\(base)/polls/\(pollId)/join" }
