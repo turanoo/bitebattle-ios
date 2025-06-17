@@ -3,6 +3,7 @@ import SwiftUI
 
 
 struct PollsView: View {
+    @Binding var path: NavigationPath
     @State private var polls: [Poll] = []
     @State private var isLoading: Bool = false
     @State private var statusMessage: String?
@@ -15,7 +16,6 @@ struct PollsView: View {
     @State private var selectedPoll: Poll? = nil
 
     var body: some View {
-        NavigationStack {
             AppBackground {
                 VStack(spacing: 20) {
                     HStack(spacing: 12) {
@@ -96,7 +96,6 @@ struct PollsView: View {
                 }
                 .interactiveDismissDisabled(isJoiningPoll)
             }
-        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 AccountNavButton()
@@ -454,7 +453,7 @@ struct PollsView: View {
 #if DEBUG
 struct PollsView_Previews: PreviewProvider {
     static var previews: some View {
-        PollsView()
+        PollsView(path: .constant(NavigationPath()))
     }
 }
 #endif

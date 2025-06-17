@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var path: NavigationPath
     var body: some View {
         AppBackground {
             VStack(spacing: 32) {
@@ -15,7 +16,7 @@ struct HomeView: View {
                     .shadow(radius: 10)
 
                 VStack(spacing: 18) {
-                    NavigationLink(destination: PollsView()) {
+                    NavigationLink(value: Route.poll) {
                         AppButtonLabel(
                             title: "Polls",
                             icon: nil,
@@ -25,7 +26,7 @@ struct HomeView: View {
                             isDisabled: false
                         )
                     }
-                    NavigationLink(destination: HeadToHeadView()) {
+                    NavigationLink(value: Route.headToHead) {
                         AppButtonLabel(
                             title: "Head-to-Head",
                             icon: nil,
@@ -97,7 +98,7 @@ struct AppButtonLabel: View {
 #if DEBUG
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView(path: .constant(NavigationPath()))
     }
 }
 #endif

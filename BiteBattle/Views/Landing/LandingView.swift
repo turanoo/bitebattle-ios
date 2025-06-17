@@ -5,6 +5,7 @@ import SwiftUI
 // No extra import is needed if they're in the same target.
 
 struct LandingView: View {
+    @Binding var path: NavigationPath
     @State private var showRegister = false
     @State private var showLogin = false
     var body: some View {
@@ -53,7 +54,7 @@ struct LandingView: View {
 #if DEBUG
 struct LandingView_Previews: PreviewProvider {
     static var previews: some View {
-        LandingView()
+        LandingView(path: .constant(NavigationPath()))
     }
 }
 #endif
