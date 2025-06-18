@@ -4,7 +4,7 @@ import Foundation
 
 struct AccountNavButton: View {
     var body: some View {
-        NavigationLink(destination: AccountView()) {
+        NavigationLink(value: Route.account) {
             HStack(spacing: 6) {
                 Image(systemName: "person.crop.circle")
                     .foregroundColor(AppColors.textOnPrimary)

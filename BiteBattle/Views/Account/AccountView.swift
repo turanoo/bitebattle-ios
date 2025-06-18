@@ -11,17 +11,8 @@ import PhotosUI
 // import APIClient // Not needed, just ensure file is in Compile Sources
 
 struct AccountView: View {
+    @Binding var path: NavigationPath
     @StateObject var viewModel = ProfileViewModel()
-    @State private var name: String = ""
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var newPassword: String = ""
-    @State private var statusMessage: String?
-    @State private var isLoading: Bool = false
-    @State private var originalName: String = ""
-    @State private var originalEmail: String = ""
-    @State private var fetchFailed: Bool = false
-    @State private var showCheckmark: Bool = false
     @State private var keyboardHeight: CGFloat = 0
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     @FocusState private var focusedField: Field?
@@ -36,7 +27,7 @@ struct AccountView: View {
             AppColors.background.ignoresSafeArea()
             ScrollView {
                 VStack(spacing: 24) {
-                    if showCheckmark {
+                    if viewModel.showCheckmark {
                         Image(systemName: "checkmark.circle.fill")
                             .resizable()
                             .frame(width: 48, height: 48)
@@ -72,18 +63,18 @@ struct AccountView: View {
                         .shadow(radius: 4)
 
                     VStack(spacing: 18) {
-                        AppTextField(placeholder: "Name", text: $name, icon: "person")
+                        AppTextField(placeholder: "Name", text: $viewModel.name, icon: "person")
                             .focused($focusedField, equals: .name)
-                        AppTextField(placeholder: "Email", text: $email, icon: "envelope")
+                        AppTextField(placeholder: "Email", text: $viewModel.email, icon: "envelope")
                             .focused($focusedField, equals: .email)
-                        AppTextField(placeholder: "Current Password (optional)", text: $password, isSecure: true, icon: "lock")
+                        AppTextField(placeholder: "Current Password (optional)", text: $viewModel.password, isSecure: true, icon: "lock")
                             .focused($focusedField, equals: .password)
-                        AppTextField(placeholder: "New Password (optional)", text: $newPassword, isSecure: true, icon: "lock.rotation")
+                        AppTextField(placeholder: "New Password (optional)", text: $viewModel.newPassword, isSecure: true, icon: "lock.rotation")
                             .focused($focusedField, equals: .newPassword)
                     }
                     .padding(.horizontal, 0)
 
-                    if let status = statusMessage {
+                    if let status = viewModel.statusMessage {
                         Text(status)
                             .foregroundColor(AppColors.error)
                             .font(.subheadline)
@@ -91,8 +82,10 @@ struct AccountView: View {
                             .padding(.horizontal)
                     }
 
-                    AppButton(title: isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: isLoading, isDisabled: !fieldsChanged || isLoading || (!password.isEmpty && newPassword.isEmpty) || (password.isEmpty && !newPassword.isEmpty)) {
-                        updateAccount()
+                    AppButton(title: viewModel.isLoading ? "Updating..." : "Update", icon: "checkmark.circle", background: AppColors.primary, foreground: AppColors.textOnPrimary, isLoading: viewModel.isLoading, isDisabled: !viewModel.fieldsChanged || viewModel.isLoading || (!viewModel.password.isEmpty && viewModel.newPassword.isEmpty) || (viewModel.password.isEmpty && !viewModel.newPassword.isEmpty)) {
+                        viewModel.updateAccount{
+                            focusedField = nil
+                        }
                     }
                     .padding(.horizontal, 0)
 
@@ -105,7 +98,7 @@ struct AccountView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isLoggedIn = false
-                        dismiss()
+                        path.removeLast(path.count)
                     }) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.right.square")
@@ -122,69 +115,11 @@ struct AccountView: View {
             }
             .hideKeyboardOnTap()
             .onAppear {
-                fetchAccount()
+                viewModel.fetchAccount()
                 subscribeToKeyboardNotifications()
             }
             .onDisappear {
                 unsubscribeFromKeyboardNotifications()
-            }
-        }
-    }
-
-    private var fieldsChanged: Bool {
-        name != originalName || email != originalEmail || !password.isEmpty || !newPassword.isEmpty
-    }
-
-    func fetchAccount() {
-        isLoading = true
-        fetchFailed = false
-        APIClient.shared.fetchAccount { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success(let account):
-                    // Only update the originals, not the text field bindings, to keep fields editable
-                    if name.isEmpty { name = account.name }
-                    if email.isEmpty { email = account.email }
-                    originalName = account.name
-                    originalEmail = account.email
-                case .failure(let error):
-                    statusMessage = error.localizedDescription
-                    fetchFailed = true
-                }
-            }
-        }
-    }
-
-    func updateAccount() {
-        isLoading = true
-        statusMessage = nil
-        let lowercasedEmail = email.lowercased()
-        APIClient.shared.updateAccount(name: name, email: lowercasedEmail, currentPassword: password, newPassword: newPassword) { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success:
-                    password = ""
-                    newPassword = ""
-                    focusedField = nil // Remove focus from all fields
-                    showCheckmark = true
-                    withAnimation {
-                        showCheckmark = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                        withAnimation {
-                            showCheckmark = false
-                        }
-                    }
-                    fetchAccount()
-                case .failure(let error):
-                    if let apiError = error as? APIClient.APIError, case .unauthorized(let message) = apiError {
-                        statusMessage = message
-                    } else {
-                        statusMessage = error.localizedDescription
-                    }
-                }
             }
         }
     }
@@ -209,6 +144,6 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView()
+        AccountView(path: .constant(NavigationPath()))
     }
 }
