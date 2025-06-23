@@ -7,7 +7,7 @@ struct Endpoints {
   static let base = "http://localhost:8080/api"
   #else
   // Device: hit your Mac’s local IP
-  static let base = "http://your_computer_IP:8080/api"
+  static let base = "https://bitebattle-backend-612596290944.us-central1.run.app/v1"
   #endif
     static var polls: String { "\(base)/polls" }
     static func joinPoll(pollId: String) -> String { "\(base)/polls/\(pollId)/join" }
@@ -15,8 +15,8 @@ struct Endpoints {
     static func pollOptions(_ id: String) -> String { "\(base)/polls/\(id)/options" }
     static var restaurantSearch: String { "\(base)/restaurants/search" }
     static var account: String { "\(base)/account" }
-    static var login: String { "\(base)/login" }
-    static var register: String { "\(base)/register" }
+    static var login: String { "\(base)/auth/login" }
+    static var register: String { "\(base)/auth/register" }
     static func updatePoll(_ id: String) -> String { "\(base)/polls/\(id)" }
     static func deletePoll(_ id: String) -> String { "\(base)/polls/\(id)" }
     static func vote(_ pollId: String) -> String { "\(base)/polls/\(pollId)/vote" }

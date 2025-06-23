@@ -264,6 +264,7 @@ struct PollsView: View {
 
         @State private var showEditSheet = false
         @State private var showDeleteAlert = false
+        @State private var showInviteAlert = false
 
         var body: some View {
             VStack(spacing: 8) {
@@ -286,8 +287,17 @@ struct PollsView: View {
                                     .imageScale(.large)
                                     .accessibilityLabel("Delete Poll")
                             }
+                            Button(action: {showInviteAlert = true}) {
+                                Image(systemName: "link.circle.fill")
+                                    .foregroundColor(AppColors.primary)
+                                    .imageScale(.large)
+                                    .accessibilityLabel("Get Poll Code")
+                                
+                            }
+                            .buttonStyle(BorderlessButtonStyle())
                         }
                     }
+                    
                 }
                 .padding(.bottom, 2)
 
@@ -337,6 +347,14 @@ struct PollsView: View {
                 Button("Cancel", role: .cancel) { }
             } message: {
                 Text("Are you sure you want to delete this poll? This cannot be undone.")
+            }
+            .alert("Invite Code", isPresented: $showInviteAlert) {
+                Button("Copy") {
+                    UIPasteboard.general.string = poll.invite_code ?? ""
+                }
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(poll.invite_code ?? "—")
             }
         }
 
@@ -427,7 +445,8 @@ struct PollsView: View {
                 }
                 .padding()
             }
-            .onAppear { pollName = poll.name ?? "" }
+            .onAppear { pollName = poll.name ?? ""
+                print(poll.invite_code) }
         }
     }
 
