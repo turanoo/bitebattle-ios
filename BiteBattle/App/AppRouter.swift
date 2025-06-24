@@ -20,7 +20,7 @@ struct AppRouter: View {
                 case .account:
                     AccountView(path: $path)
                 case .headToHead:
-                    HeadToHeadView()
+                    HeadToHeadView(path: $path)
                 }
             }
         }

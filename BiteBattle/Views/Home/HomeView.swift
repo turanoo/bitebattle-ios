@@ -52,15 +52,6 @@ struct HomeView: View {
     }
 }
 
-// Add a placeholder HeadToHeadView for navigation
-struct HeadToHeadView: View {
-    var body: some View {
-        Text("Head-to-Head Coming Soon!")
-            .font(.title)
-            .foregroundColor(AppColors.orange)
-            .padding()
-    }
-}
 
 struct AppButtonLabel: View {
     let title: String

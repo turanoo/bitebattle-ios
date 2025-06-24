@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		31162B492DFA1B8200291F60 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31162B482DFA1B8200291F60 /* AccountViewModel.swift */; };
+		314DAB002E09DA1800F80CF6 /* HeadToHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314DAAFF2E09DA1800F80CF6 /* HeadToHeadView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		31162B482DFA1B8200291F60 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
+		314DAAFF2E09DA1800F80CF6 /* HeadToHeadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadToHeadView.swift; sourceTree = "<group>"; };
 		7792AF092DF1067800E8E40C /* BiteBattle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BiteBattle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -37,6 +39,7 @@
 		7792AF002DF1067800E8E40C = {
 			isa = PBXGroup;
 			children = (
+				314DAAFF2E09DA1800F80CF6 /* HeadToHeadView.swift */,
 				31162B482DFA1B8200291F60 /* AccountViewModel.swift */,
 				7792AF0B2DF1067800E8E40C /* BiteBattle */,
 				7792AF0A2DF1067800E8E40C /* Products */,
@@ -126,6 +129,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31162B492DFA1B8200291F60 /* AccountViewModel.swift in Sources */,
+				314DAB002E09DA1800F80CF6 /* HeadToHeadView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
