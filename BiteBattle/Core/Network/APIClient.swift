@@ -125,7 +125,7 @@ final class APIClient {
     // import YourModelModule
 
     func joinPoll(pollId: String, inviteCode: String, completion: @escaping (Result<Poll, Error>) -> Void) {
-        guard let url = URL(string: Endpoints.joinPoll(pollId: pollId)),
+        guard let url = URL(string: Endpoints.joinPoll(pollInvite: inviteCode)),
               let body = try? JSONSerialization.data(withJSONObject: ["invite_code": inviteCode]),
               let request = makeRequest(url: url, method: "POST", body: body, contentType: "application/json") else {
             completion(.failure(APIError.notLoggedIn)); return

@@ -142,37 +142,24 @@ struct PollsView: View {
     }
 
     func joinPoll() {
-        guard !inviteCode.isEmpty else { return }
-        isJoiningPoll = true
-        APIClient.shared.fetchPolls { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let polls):
-                    if let poll = polls.first(where: { $0.invite_code == inviteCode }) {
-                        APIClient.shared.joinPoll(pollId: poll.id, inviteCode: inviteCode) { joinResult in
-                            DispatchQueue.main.async {
-                                switch joinResult {
-                                case .success(_):
-                                    inviteCode = ""
-                                    isJoiningPoll = false
-                                    // After joining, refresh polls just like onAppear
-                                    fetchPolls()
-                                case .failure(let error):
-                                    isJoiningPoll = false
-                                    statusMessage = error.localizedDescription
-                                }
-                            }
-                        }
-                    } else {
-                        isJoiningPoll = false
-                        statusMessage = "No poll found for invite code."
-                    }
-                case .failure(let error):
-                    isJoiningPoll = false
-                    statusMessage = error.localizedDescription
-                }
-            }
+      guard !inviteCode.isEmpty else { return }
+      isJoiningPoll = true
+        APIClient.shared.joinPoll(pollId: "", inviteCode: inviteCode) { result in
+        DispatchQueue.main.async {
+          isJoiningPoll = false
+          switch result {
+          case .success(let joinedPoll):
+            // 1) Clear the code
+            inviteCode = ""
+//            polls.insert(joinedPoll, at: 0)
+              fetchPolls()
+            statusMessage = nil
+          case .failure(let error):
+            statusMessage = error.localizedDescription
+          }
+            showJoinPoll = false
         }
+      }
     }
 
     struct GradientBackground<Content: View>: View {
