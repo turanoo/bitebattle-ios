@@ -17,6 +17,7 @@ struct PollDetailView: View {
                 headerView
                 statusOrProgressView
                 optionsListView
+                    .animation(.easeInOut(duration: 1), value: results)
                 Spacer()
                 addButton
             }
@@ -62,78 +63,87 @@ struct PollDetailView: View {
     private var optionsListView: some View {
         let backgroundColors = AppColors.pollTileColors
         let borderColor = AppColors.border
-        return ScrollView {
-            VStack(spacing: 18) {
-                ForEach(Array(results.enumerated()), id: \.element.option_id) { (idx, option) in
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Text(option.option_name)
-                                .font(.headline)
-                                .foregroundColor(AppColors.secondary)
-                            Spacer()
-                            Text("Votes: \(option.vote_count)")
-                                .font(.subheadline)
-                                .foregroundColor(AppColors.textOnPrimary)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(AppColors.secondary.opacity(0.7))
-                                .cornerRadius(8)
-                        }
-                        Divider()
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Voter IDs:")
-                                .font(.caption)
-                                .foregroundColor(AppColors.secondary)
-                            if option.voter_ids.isEmpty {
-                                Text("No votes yet")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
-                            } else {
-                                ForEach(option.voter_ids, id: \.self) { voter in
-                                    Text(voter)
-                                        .font(.caption2)
-                                        .foregroundColor(AppColors.textOnPrimary)
-                                }
-                            }
-                        }
-                        // Voting/Unvoting Button
-                        if let userId = currentUserId {
-                            let hasVoted = option.voter_ids.contains(userId)
-                            AppButton(
-                                title: hasVoted ? "Unvote" : "Vote",
-                                icon: hasVoted ? "xmark.circle" : "checkmark.circle",
-                                background: hasVoted ? AppColors.error : AppColors.primary,
-                                foreground: AppColors.textOnPrimary,
-                                isLoading: false,
-                                isDisabled: isLoading,
-                                action: {
-                                    if hasVoted {
-                                        unvote(optionId: option.option_id)
-                                    } else {
-                                        vote(optionId: option.option_id)
-                                    }
-                                }
-                            )
-                            .padding(.top, 8)
-                        }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(backgroundColors[idx % backgroundColors.count])
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(borderColor, lineWidth: 2)
-                    )
-                    .shadow(color: AppColors.textSecondary.opacity(0.08), radius: 6, x: 0, y: 3)
-                    .padding(.horizontal, 16)
-                    .frame(maxWidth: 400)
-                }
-            }
-            .padding(.vertical, 8)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .animation(.easeInOut(duration: 0.18), value: results)
+        return ScrollViewReader { proxy in
+            ScrollView {
+                Color.clear //invisisble anchor
+                    .frame(height: 0)
+                    .id("TOP")
+               VStack(spacing: 18) {
+                   ForEach(Array(results.enumerated()), id: \.element.option_id) { (idx, option) in
+                       VStack(alignment: .leading, spacing: 10) {
+                           HStack {
+                               Text(option.option_name)
+                                   .font(.headline)
+                                   .foregroundColor(AppColors.secondary)
+                               Spacer()
+                               Text("Votes: \(option.vote_count)")
+                                   .font(.subheadline)
+                                   .foregroundColor(AppColors.textOnPrimary)
+                                   .padding(.horizontal, 8)
+                                   .padding(.vertical, 2)
+                                   .background(AppColors.secondary.opacity(0.7))
+                                   .cornerRadius(8)
+                           }
+                           Divider()
+                           VStack(alignment: .leading, spacing: 4) {
+                               Text("Voter IDs:")
+                                   .font(.caption)
+                                   .foregroundColor(AppColors.secondary)
+                               if option.voter_ids.isEmpty {
+                                   Text("No votes yet")
+                                       .font(.caption2)
+                                       .foregroundColor(.gray)
+                               } else {
+                                   ForEach(option.voter_ids, id: \.self) { voter in
+                                       Text(voter)
+                                           .font(.caption2)
+                                           .foregroundColor(AppColors.textPrimary)
+                                   }
+                               }
+                           }
+                           // Voting/Unvoting Button
+                           if let userId = currentUserId {
+                               let hasVoted = option.voter_ids.contains(userId)
+                               AppButton(
+                                   title: hasVoted ? "Unvote" : "Vote",
+                                   icon: hasVoted ? "xmark.circle" : "checkmark.circle",
+                                   background: hasVoted ? AppColors.error : AppColors.primary,
+                                   foreground: AppColors.textOnPrimary,
+                                   isLoading: false,
+                                   isDisabled: isLoading,
+                                   action: {
+                                       if hasVoted {
+                                           unvote(optionId: option.option_id)
+                                       } else {
+                                           vote(optionId: option.option_id)
+                                       }
+                                       withAnimation(.easeInOut(duration: 1)) {
+                                           proxy.scrollTo("TOP")
+                                       }
+                                   }
+                               )
+                               .padding(.top, 8)
+                           }
+                       }
+                       .padding()
+                       .background(
+                           RoundedRectangle(cornerRadius: 16)
+                               .fill(backgroundColors[idx % backgroundColors.count])
+                       )
+                       .overlay(
+                           RoundedRectangle(cornerRadius: 16)
+                               .stroke(borderColor, lineWidth: 2)
+                       )
+                       .shadow(color: AppColors.textSecondary.opacity(0.08), radius: 6, x: 0, y: 3)
+                       .padding(.horizontal, 16)
+                       .frame(maxWidth: 400)
+                   }
+               }
+               .padding(.vertical, 8)
+               .frame(maxWidth: .infinity, alignment: .center)
+               .animation(.easeInOut(duration: 1), value: results)
+        }
+        
         }
     }
 
