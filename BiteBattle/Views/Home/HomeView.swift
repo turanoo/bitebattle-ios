@@ -3,52 +3,52 @@ import SwiftUI
 struct HomeView: View {
     @Binding var path: NavigationPath
     var body: some View {
-        AppBackground {
-            VStack(spacing: 32) {
-                Spacer()
-                
-                // Logo
-                Image(systemName: "fork.knife.circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .foregroundColor(AppColors.primary)
-                    .shadow(radius: 10)
+        ZStack(alignment: .topTrailing) {
+            AppBackground {
+                VStack(spacing: 32) {
+                    Spacer()
+                    // Logo
+                    Image(systemName: "fork.knife.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(AppColors.primary)
+                        .shadow(radius: 10)
 
-                VStack(spacing: 18) {
-                    NavigationLink(value: Route.poll) {
-                        AppButtonLabel(
-                            title: "Polls",
-                            icon: nil,
-                            background: AppColors.primary,
-                            foreground: AppColors.textOnPrimary,
-                            isLoading: false,
-                            isDisabled: false
-                        )
+                    VStack(spacing: 18) {
+                        NavigationLink(value: Route.poll) {
+                            AppButtonLabel(
+                                title: "Polls",
+                                icon: nil,
+                                background: AppColors.primary,
+                                foreground: AppColors.textOnPrimary,
+                                isLoading: false,
+                                isDisabled: false
+                            )
+                        }
+                        NavigationLink(value: Route.headToHead) {
+                            AppButtonLabel(
+                                title: "Head-to-Head",
+                                icon: nil,
+                                background: AppColors.secondary,
+                                foreground: AppColors.textOnPrimary,
+                                isLoading: false,
+                                isDisabled: false
+                            )
+                        }
                     }
-                    NavigationLink(value: Route.headToHead) {
-                        AppButtonLabel(
-                            title: "Head-to-Head",
-                            icon: nil,
-                            background: AppColors.secondary,
-                            foreground: AppColors.textOnPrimary,
-                            isLoading: false,
-                            isDisabled: false
-                        )
-                    }
-                }
-                .padding(.horizontal, 24)
+                    .padding(.horizontal, 24)
 
-                Spacer()
-            }
-            .padding()
-            .background(AppColors.background.ignoresSafeArea())
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    AccountNavButton()
+                    Spacer()
                 }
+                .padding()
+                .background(AppColors.background.ignoresSafeArea())
             }
+            VerticalToolbarView(items: [NavToolItem(systemImage: "person.crop.circle", label: "Account", destination: Route.account), NavToolItem(systemImage: "message", label: "AI", destination: Route.account)])
+                .padding(.trailing, 12)
+                .padding(.top, 6)
         }
+       
     }
 }
 

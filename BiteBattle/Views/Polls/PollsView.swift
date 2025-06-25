@@ -149,15 +149,14 @@ struct PollsView: View {
           isJoiningPoll = false
           switch result {
           case .success(let joinedPoll):
-            // 1) Clear the code
             inviteCode = ""
-//            polls.insert(joinedPoll, at: 0)
-              fetchPolls()
+            fetchPolls()
             statusMessage = nil
-          case .failure(let error):
-            statusMessage = error.localizedDescription
-          }
             showJoinPoll = false
+          case .failure(let error):
+              print(error.localizedDescription)
+            statusMessage = "This poll does not exist"
+          }
         }
       }
     }

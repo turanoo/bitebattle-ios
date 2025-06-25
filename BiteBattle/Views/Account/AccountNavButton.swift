@@ -11,7 +11,8 @@ struct AccountNavButton: View {
                 Text("Account")
                     .foregroundColor(AppColors.textOnPrimary)
             }
-            .padding(.vertical, 6)
+            .frame(maxHeight: 24)
+            .padding(.vertical, 5)
             .padding(.horizontal, 10)
             .background(AppColors.primary.opacity(0.9))
             .cornerRadius(10)
