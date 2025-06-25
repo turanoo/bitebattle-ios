@@ -10,7 +10,7 @@ struct Endpoints {
   static let base = "https://bitebattle-backend-612596290944.us-central1.run.app/v1"
   #endif
     static var polls: String { "\(base)/polls" }
-    static func joinPoll(pollId: String) -> String { "\(base)/polls/\(pollId)/join" }
+    static func joinPoll(pollInvite: String) -> String { "\(base)/polls/join" }
     static func pollResults(_ id: String) -> String { "\(base)/polls/\(id)/results" }
     static func pollOptions(_ id: String) -> String { "\(base)/polls/\(id)/options" }
     static var restaurantSearch: String { "\(base)/restaurants/search" }
