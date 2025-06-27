@@ -4,7 +4,7 @@
 struct Endpoints {
 #if targetEnvironment(simulator)
   // Simulator: can hit localhost on your Mac
-  static let base = "http://localhost:8080/api"
+  static let base = "https://bitebattle-backend-612596290944.us-central1.run.app/v1"
   #else
   // Device: hit your Mac’s local IP
   static let base = "https://bitebattle-backend-612596290944.us-central1.run.app/v1"
@@ -21,4 +21,5 @@ struct Endpoints {
     static func deletePoll(_ id: String) -> String { "\(base)/polls/\(id)" }
     static func vote(_ pollId: String) -> String { "\(base)/polls/\(pollId)/vote" }
     static func unvote(_ pollId: String) -> String { "\(base)/polls/\(pollId)/unvote" }
+    static var AIpolls: String { "\(base)/agentic/command"}
 }

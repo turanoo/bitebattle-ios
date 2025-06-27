@@ -21,6 +21,8 @@ struct AppRouter: View {
                     AccountView(path: $path)
                 case .headToHead:
                     HeadToHeadView(path: $path)
+                case .AIHomeView:
+                    AIHomeView(path: $path)
                 }
             }
         }
