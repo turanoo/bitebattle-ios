@@ -44,7 +44,7 @@ struct HomeView: View {
                 .padding()
                 .background(AppColors.background.ignoresSafeArea())
             }
-            VerticalToolbarView(items: [NavToolItem(systemImage: "person.crop.circle", label: "Account", destination: Route.account), NavToolItem(systemImage: "message", label: "AI", destination: Route.account)])
+            VerticalToolbarView(items: [NavToolItem(systemImage: "person.crop.circle", label: "Account", destination: Route.account), NavToolItem(systemImage: "message", label: "AI", destination: Route.AIHomeView)])
                 .padding(.trailing, 12)
                 .padding(.top, 6)
         }

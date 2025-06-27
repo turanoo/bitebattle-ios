@@ -119,6 +119,25 @@ final class APIClient {
             }
         }.resume()
     }
+    
+    func useAiPoll(command: String, completion: @escaping (Result<Poll, Error>) -> Void) {
+        guard let url = URL(string: Endpoints.AIpolls),
+              let body = try? JSONSerialization.data(withJSONObject: ["command": command]),
+              let request = makeRequest(url: url, method: "POST", body: body, contentType: "application/json") else {
+            completion(.failure(APIError.notLoggedIn)); return
+        }
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async { // Ensure UI state changes are on main thread
+                if let error = error { completion(.failure(error)); return }
+                guard let data = data else { completion(.failure(APIError.noData)); return }
+                do {
+                    let poll = try JSONDecoder().decode(Poll.self, from: data)
+                    completion(.success(poll))
+                } catch { completion(.failure(error)) }
+            }
+        }.resume()
+    }
+        
 
     // Updated joinPoll to use pollId and inviteCode in body
     // Make sure to import or define the Poll model at the top if needed:
