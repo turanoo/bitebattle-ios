@@ -36,11 +36,9 @@ struct HeadToHeadView: View {
                     searchRestaurants()
                 }
             }
-            .hideKeyboardOnTap()
             .padding(.horizontal, 24)
         }
-        
-        
+        .hideKeyboardOnTap()
     }
     
     func searchRestaurants() {

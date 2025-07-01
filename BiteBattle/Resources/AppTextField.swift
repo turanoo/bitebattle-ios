@@ -32,4 +32,5 @@ public struct AppTextField: View {
         )
         .shadow(color: AppColors.primary.opacity(0.04), radius: 1, x: 0, y: 1)
     }
+    
 }

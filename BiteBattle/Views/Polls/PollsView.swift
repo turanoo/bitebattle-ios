@@ -69,6 +69,7 @@ struct PollsView: View {
                     }
                     .padding()
                 }
+                .hideKeyboardOnTap()
                 .interactiveDismissDisabled(isCreatingPoll)
                 .onChange(of: isCreatingPoll) { _, _ in
                     if !isCreatingPoll {
@@ -94,6 +95,7 @@ struct PollsView: View {
                     }
                     .padding()
                 }
+                .hideKeyboardOnTap()
                 .interactiveDismissDisabled(isJoiningPoll)
             }
         .toolbar {
